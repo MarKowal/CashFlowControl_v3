@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block footer %}
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hideshowpassword/2.2.0/hideShowPassword.min.js" integrity="sha512-feJ++Gf5tPybXI7qL3wIfavxoRCJIuI72gfd0Z2j5MYQIAnEfhzQMp3XHM6eAsXR6JrHULPCVPYFeH9AJiuPJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/js/app.js"></script>
+
+    <script>
+        //umieszcza komentarz za buttonem Show/Hide
+        $.validator.setDefaults({
+            errorElement: 'span',
+            errorClass: 'help-block',
+            errorPlacement: function(error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
+      
+        $(document).ready(function(){
+
+            var userID = '{{ user.id }}';
+
+            $('#formProfile').validate({
+                //built-in validation rules from https://jqueryvalidation.org/documentation/
+                rules: {
+                    name: 'required',
+                    email: {
+                        required: true,
+                        email: true,
+                        //walidacja z użyciem AJAX z Account.php:
+                        //remote: '/account/validate-email'
+                        remote: {
+                            url: '/account/validate-email',
+                            data: {
+                                ignore_id: function(){
+                                    return userID;
+                                }
+                            }
+                        }
+                    },
+                    password: {
+                        //required: true,
+                        minlength: 6, 
+                        //call my own method (from above)
+                        validPassword: true
+                    }/*,
+                    password_confirm: {
+                        equalTo: '#inputPassword'
+                    }*/
+                },
+                //my custom message for email validation in AJAX:
+                messages: {
+                        email: {
+                            remote: 'email already taken'
+                        }
+                    }
+            });
+
+            //show password button https://cdnjs.com/libraries/hideshowpassword 
+            //oraz https://github.com/cloudfour/hideShowPassword
+            $('#inputPassword').hideShowPassword({
+                show: false,
+                innerToggle: 'focus',
+                toggle: {
+                    className: 'my-toggle'
+                }
+            });
+
+        });
+    </script>
+
+{% endblock %}
+
+
+
+{% block body %}
+    
+    <h1>Profile</h1>
+
+    {% if user.errors is not empty %}
+
+    <p>Errors:</p>
+    <ul>
+        {% for error in user.errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post" id="formProfile" action="/profile/update">
+
+        <div>
+            <label for="inputName">Name</label>
+            <input type="text" id="inputName" name="name" placeholder="Name" value="{{ user.name }}" required>
+        </div>
+        <div>
+            <label for="inputEmail">Email address</label>
+            <input type="email" id="inputEmail" name="email" placeholder="Email" value="{{ user.email }}" required>
+        </div>
+        <div>
+            <label for="inputPassword">Password</label>
+            <input type="password" id="inputPassword" name="password" placeholder="Password" aria-describedby="helpBlock">
+            <span id="helpBlock">Leave blank to keep current password</span>
+        </div>  
+        
+
+        <button type="submit">Save</button>
+        <a href="/profile/show">Cancel</a>
+
+    </form>
+
+{% endblock %}

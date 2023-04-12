@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+    
+<h1>Profile details</h1>
+    <!--HTML description list-->
+    <dl>
+        <dt>Name</dt>
+        <dd>{{ user.name }}</dd>
+        <dt>Email</dt>
+        <dd>{{ user.email }}</dd>
+    </dl>
+    <br><a href="/profile/edit">Edit</a>
+
+{% endblock %}
