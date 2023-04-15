@@ -5,9 +5,9 @@ namespace App;
 class Config{
 
     const DB_HOST = 'localhost';
-    const DB_NAME = 'mvc_registration_login';
-    const DB_USER = 'mvc_user1';
-    const DB_PASSWORD = 'qwerty1234';
+    const DB_NAME = 'cashflowcontrol_v3';
+    const DB_USER = 'cfc_v3_user';
+    const DB_PASSWORD = 'MoreMoney$$$';
 
     const SHOW_ERRORS = true;
     //false - do not show any error details on the screen, all is saved in logs/txt file
