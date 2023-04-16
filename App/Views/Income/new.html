@@ -6,5 +6,21 @@
     
     <h1>Add income</h1>
 
+    <form action="" method="post">
+        <div>
+            <label for="inputAmount">Amount</label>
+            <input type="number" name="amount" id="inputAmount" placeholder="amount" required>
+        </div>
+        <div>
+            <label for="inputDate">Date</label>
+            <input type="date" name="date" id="inputDate" required>
+        </div>
+        <p>Category of income:</p>
+        <!--tutaj poprzez Twiga trzeba w pętelce wyświetlić wszystkie kategorie przychodów z DB-->
+
+        
+        <br><button type="submit">Submit</button>
+    </form>
+
  
 {% endblock %}
