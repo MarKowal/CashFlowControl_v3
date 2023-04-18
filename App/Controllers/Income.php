@@ -20,7 +20,13 @@ class Income extends Authenticated{
 
     //zapisanie danych z formularza income.html do bazy danych
     public function createAction(){
+        echo '<pre>';
+        var_dump($_POST);
+    }
 
+    //wyświetla info że przychód został pomyślnie zapisany w DB
+    public function successAction(){
+        //View::renderTemplate('Signup/success.html');
     }
 }
 
