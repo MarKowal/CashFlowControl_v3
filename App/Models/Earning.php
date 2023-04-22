@@ -55,5 +55,17 @@ class Earning extends \Core\Model{
         
     }
 
+    public static function checkIfDefaultCategoriesAreSaved(){
+
+        $sql = 'SELECT * FROM incomes_category_assigned_to_users WHERE user_id = :id';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        
+        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+        $stmt->execute();
+
+        return $stmt->fetch();
+    }
 
 }

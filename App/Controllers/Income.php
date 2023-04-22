@@ -14,8 +14,7 @@ class Income extends Authenticated{
       
         //$incomeCategories = [];
         $this->incomeCategories = Earning::getDefaultIncomeCategories();
-        var_dump($this->incomeCategories);
-
+       
         View::renderTemplate('Income/new.html', [
             'categories' => $this->incomeCategories
         ]);
@@ -25,15 +24,20 @@ class Income extends Authenticated{
     public function createAction(){
 
         $income = new Earning($_POST);
+     
+        $this->incomeCategories = Earning::getDefaultIncomeCategories();
+        if(! Earning::checkIfDefaultCategoriesAreSaved()){
+            $income->saveToAssignedCategories($this->incomeCategories);
+        } 
 
         echo '<pre>';
         var_dump($income);
-        var_dump($_SESSION);
-        echo 'KATEGORIE DEFAULT: ';
-        $this->incomeCategories = Earning::getDefaultIncomeCategories();
-        var_dump($this->incomeCategories);
+        //TERAZ WALIDACJA $income w modelu $Earning
 
-        $income->saveToAssignedCategories($this->incomeCategories);
+
+
+        
+
         //$this->redirect('/income/success');
 
         //jeszcze if i templatka jezeli save się nie powiodł
