@@ -6,6 +6,8 @@ use PDO;
 
 class Earning extends \Core\Model{
 
+    public $errors = []; 
+
     public function __construct($data = []){
          foreach($data as $key => $value){
             $this->$key = $value;
@@ -20,20 +22,6 @@ class Earning extends \Core\Model{
         $stmt->execute();
         
         return $stmt->fetchAll(PDO::FETCH_COLUMN, 1);
-    }
-
-    public function save(){
-        //zapisanie do incomes_category_assigned_to_users
-        //zapisanie do incomes
-        //może na dwie funkcje protected to rozdzielić?
-        //najpierw zwalidować
-
-        
-
-    }
-
-    public function validate(){
-
     }
 
     public function saveToAssignedCategories($categories){
@@ -51,10 +39,6 @@ class Earning extends \Core\Model{
         }
     }
 
-    public function saveToIncomes(){
-        
-    }
-
     public static function checkIfDefaultCategoriesAreSaved(){
 
         $sql = 'SELECT * FROM incomes_category_assigned_to_users WHERE user_id = :id';
@@ -67,5 +51,42 @@ class Earning extends \Core\Model{
 
         return $stmt->fetch();
     }
+
+    public function saveToIncomes(){
+
+        $this->validate();
+
+        if (empty($this->errors)){
+            echo 'brak błędów w waliadcji';        
+        } else {
+            var_dump($this->errors);
+            //jakiegoś returna z błędem trzeba zakodować
+        }
+    }
+
+    public function validate(){
+        
+        if ($this->amount == ''){
+            $this->errors[] = 'Amount is required.';
+        }
+
+        if ($this->date == ''){
+            $this->errors[] = 'Date is required.';
+        }
+
+        if ($this->incomeCategory == ''){
+            $this->errors[] = 'Income category is required.';
+        }
+
+        if ((int)$this->amount <= 0){
+            $this->errors[] = 'Amount must be more than zero.';
+        }
+
+        if (! strtotime($this->date)){
+            $this->errors[] = 'Date must be a date-type';
+        }
+
+    }
+
 
 }

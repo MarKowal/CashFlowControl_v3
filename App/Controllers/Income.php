@@ -34,7 +34,7 @@ class Income extends Authenticated{
         var_dump($income);
         //TERAZ WALIDACJA $income w modelu $Earning
 
-
+        $income->saveToIncomes();
 
         
 
