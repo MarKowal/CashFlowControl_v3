@@ -39,7 +39,7 @@ class Earning extends \Core\Model{
         }
     }
 
-    public static function checkIfDefaultCategoriesAreSaved(){
+    public static function checkIfUserHasDefaultCategories(){
 
         $sql = 'SELECT * FROM incomes_category_assigned_to_users WHERE user_id = :id';
         $db = static::getDB();
@@ -52,12 +52,32 @@ class Earning extends \Core\Model{
         return $stmt->fetch();
     }
 
+    public function getIncomeCategoryIdAssignedToUser(){
+
+        $sql = 'SELECT * FROM incomes_category_assigned_to_users WHERE user_id = :id AND name = :incomeCategory';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':incomeCategory', $this->incomeCategory, PDO::PARAM_STR);
+
+        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_COLUMN, 0);
+    }
+
+
     public function saveToIncomes(){
 
         $this->validate();
 
         if (empty($this->errors)){
-            echo 'brak błędów w waliadcji';        
+
+            //robocze:
+            echo $_SESSION['user_id'].'<br>';
+            echo $this->incomeCategory;  //z tego wyciągam: amount / date / category / comment
+
+
         } else {
             var_dump($this->errors);
             //jakiegoś returna z błędem trzeba zakodować

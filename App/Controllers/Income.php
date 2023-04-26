@@ -26,13 +26,18 @@ class Income extends Authenticated{
         $income = new Earning($_POST);
      
         $this->incomeCategories = Earning::getDefaultIncomeCategories();
-        if(! Earning::checkIfDefaultCategoriesAreSaved()){
+
+        if(! Earning::checkIfUserHasDefaultCategories()){
             $income->saveToAssignedCategories($this->incomeCategories);
         } 
 
+        //robocze:
         echo '<pre>';
         var_dump($income);
-        //TERAZ WALIDACJA $income w modelu $Earning
+        echo '<br>IncomeCategoryIdAssignedToUser = ';
+        var_dump($income->getIncomeCategoryIdAssignedToUser());
+
+
 
         $income->saveToIncomes();
 
