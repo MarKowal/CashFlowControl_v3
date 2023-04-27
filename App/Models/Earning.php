@@ -74,12 +74,33 @@ class Earning extends \Core\Model{
         if (empty($this->errors)){
 
             //robocze:
-            echo $_SESSION['user_id'].'<br>';
-            echo $this->incomeCategory;  //z tego wyciągam: amount / date / category / comment
+           // echo $_SESSION['user_id'].'<br>';
+            //echo $this->incomeCategory.'<br>';  //z tego wyciągam: amount / date / category / comment
+            //echo $this->getIncomeCategoryIdAssignedToUser();
+
+            ////////
+
+            $sql = 'INSERT INTO incomes (user_id, inc_cat_assigned_user_id, amount, date_of_income, income_comment) 
+                    VALUES (:user_id, :inc_cat_assigned_user_id, :amount, :date_of_income, :income_comment)';
+
+            $db = static::getDB();
+            $stmt = $db->prepare($sql);
+
+            //czy bedą probklemy z przerabianiem rodzajów STR->INT?
+
+            $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+            $stmt->bindValue(':inc_cat_assigned_user_id', $this->getIncomeCategoryIdAssignedToUser(), PDO::PARAM_INT);
+            $stmt->bindValue(':amount', $this->amount, PDO::PARAM_INT);
+            $stmt->bindValue(':date_of_income', $this->date, PDO::PARAM_STR);
+            $stmt->bindValue(':income_comment', $this->incomeComment, PDO::PARAM_STR);
+
+            return $stmt->execute();
 
 
         } else {
             var_dump($this->errors);
+            return false;
+
             //jakiegoś returna z błędem trzeba zakodować
         }
     }

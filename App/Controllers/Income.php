@@ -5,6 +5,7 @@ namespace App\Controllers;
 use \Core\View;
 use App\Controllers\Authenticated;
 use App\Models\Earning;
+use App\Flash;
 
 class Income extends Authenticated{
     
@@ -31,21 +32,15 @@ class Income extends Authenticated{
             $income->saveToAssignedCategories($this->incomeCategories);
         } 
 
-        //robocze:
-        echo '<pre>';
-        var_dump($income);
-        echo '<br>IncomeCategoryIdAssignedToUser = ';
-        var_dump($income->getIncomeCategoryIdAssignedToUser());
-
-
-
-        $income->saveToIncomes();
-
-        
-
-        //$this->redirect('/income/success');
-
-        //jeszcze if i templatka jezeli save się nie powiodł
+        if($income->saveToIncomes()){
+            Flash::addMessages('Superb!', 'success');
+            $this->redirect('/income/success');
+        } else {
+            Flash::addMessages('Sorry, try again.', 'info');
+            View::renderTemplate('Income/new.html', [
+                'categories' => $this->incomeCategories
+            ]);
+        }
 
     }
 
