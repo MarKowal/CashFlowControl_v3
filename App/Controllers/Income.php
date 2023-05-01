@@ -15,9 +15,9 @@ class Income extends Authenticated{
       
         //$incomeCategories = [];
         $this->incomeCategories = Earning::getDefaultIncomeCategories();
-       
         View::renderTemplate('Income/new.html', [
-            'categories' => $this->incomeCategories
+            'categories' => $this->incomeCategories,
+            'presentDate' => $this->getPresentDate()
         ]);
     }
 
@@ -48,6 +48,9 @@ class Income extends Authenticated{
         View::renderTemplate('income/success.html');
     }
 
+    protected function getPresentDate(){
+        return date("Y-m-d"); 
+    }
 
 }
 
