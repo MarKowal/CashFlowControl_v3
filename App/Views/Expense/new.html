@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Add expense{% endblock %}
+
+{% block body %}
+    
+    <h1>Add expense</h1>
+
+    <!-- <form method="post" action="/expense/create"> -->
+    <form method="post">
+
+        <div>
+            <label for="inputAmount">Amount</label>
+            <input type="number" name="amount" id="inputAmount" placeholder="0,00" required min="0" step="1">
+        </div>
+        <div>
+            <label for="inputDate">Date</label>
+            <input type="date" name="date" id="inputDate" required value="{{ presentDate }}">
+        </div>
+
+        <p>Category of expense:</p>
+        {% for category in categories %}
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="expenseCategory" id="{{ category }}" value="{{ category }}">
+                <label class="form-check-label" for="{{ category }}">
+                    {{ category }}
+                </label>
+            </div>
+        {% endfor %}
+        
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">Please describe the category of expense:</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="1" name="expenseComment"></textarea>
+        </div>
+        <br><button type="submit">Submit</button>
+    </form>
+
+ 
+{% endblock %}
