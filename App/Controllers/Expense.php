@@ -15,9 +15,12 @@ class Expense extends Authenticated{
     public function newAction(){
       
         $this->expenseCategories = Expenditure::getDefaultExpenseCategories();
+        $this->paymentCategories = Expenditure::getDefaultPaymentCategories();
+
         View::renderTemplate('Expense/new.html', [
             'categories' => $this->expenseCategories,
-            'presentDate' => $this->getPresentDate()
+            'presentDate' => $this->getPresentDate(),
+            'payments' => $this->paymentCategories
         ]);
     }
 
