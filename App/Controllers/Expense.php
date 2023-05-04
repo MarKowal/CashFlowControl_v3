@@ -38,7 +38,17 @@ class Expense extends Authenticated{
      
         $this->saveCategoriesAssignedToUser($expense);
 
-        
+        if($expense->saveToExpenses()){
+            Flash::addMessages('Superb!', 'success');
+            $this->redirect('/expense/success');
+        } else {
+            Flash::addMessages('Sorry, try again.', 'info');
+            View::renderTemplate('Expense/new.html', [
+                'categories' => $this->expenseCategories,
+                'presentDate' => $this->getPresentDate(),
+                'payments' => $this->paymentCategories
+            ]);
+        }
     }
 
     protected function saveCategoriesAssignedToUser($expense){
@@ -52,6 +62,10 @@ class Expense extends Authenticated{
         if(! Expenditure::checkIfUserHasDefaultPaymentCategories()){
             $expense->savePaymentsToAssignedCategories($this->paymentCategories);
         } 
+    }
+    
+    public function successAction(){
+        View::renderTemplate('expense/success.html');
     }
 }
 
