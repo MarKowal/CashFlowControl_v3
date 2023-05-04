@@ -38,7 +38,8 @@ class Income extends Authenticated{
         } else {
             Flash::addMessages('Sorry, try again.', 'info');
             View::renderTemplate('Income/new.html', [
-                'categories' => $this->incomeCategories
+                'categories' => $this->incomeCategories,
+                'presentDate' => $this->getPresentDate()
             ]);
         }
 
