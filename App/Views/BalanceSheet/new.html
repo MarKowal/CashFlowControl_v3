@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Balance shet{% endblock %}
+
+{% block body %}
+    
+    <h1>Balance sheet</h1>
+
+    <form method="post" action="/balancesheet/new">
+            <select class="form-select mt-4 mb-2" name="timePeriod">
+                <option disabled selected>Select the time period</option>
+                <option value="presentMonth">Present month</option>
+                <option value="previousMonth">Previous month</option>
+                <option value="presentYear">Present year</option>
+                <option value="otherTime">Other time</option>
+            </select>
+           
+            <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+
+{% endblock %}
