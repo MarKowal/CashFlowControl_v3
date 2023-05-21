@@ -29,23 +29,24 @@ class BalanceSheet extends Authenticated{
         $this->selectedStartDate = new DateTime(); 
         $this->selectedEndDate = new DateTime();
 
-        if(isset($_POST['dateStart'])){
-            echo $this->selectedStartDateString = $_POST['dateStart'].'<br>';
-            echo $this->selectedEndDateString = $_POST['dateEnd'].'<br>';
+        $incomes = new Earning();
+        echo '<pre>';          
 
-            if($this->validateStartAndEndDates() == true){
-                echo 'both the Other Dates are good';
-                exit();
-                //teraz mam dwie zwalidowane daty od usera - początkową i końcową
+        if(isset($_POST['dateStart'])){
+            $this->selectedStartDateString = $_POST['dateStart'];
+            $this->selectedEndDateString = $_POST['dateEnd'];
+
+            if($this->validateStartAndEndDates() == true){     
+                var_dump($incomes->getIncomesResult($this->selectedStartDateString, $this->selectedEndDateString));;
+                //exit();
+
             }
         }
 
         if($this->timePeriod != NULL){
             $this->transferTimePeriodIntoDate();
+            var_dump($incomes->getIncomesResult($this->selectedStartDateString, $this->selectedEndDateString));;
         }
-
-        echo $this->selectedStartDateString.'<br>';
-        echo $this->selectedEndDateString;
     }
 
     protected function transferTimePeriodIntoDate(){
