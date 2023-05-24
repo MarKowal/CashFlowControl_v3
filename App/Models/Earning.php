@@ -140,14 +140,27 @@ class Earning extends \Core\Model{
         $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
         $stmt->bindParam(':endDate', $endDate, PDO::PARAM_STR);
 
-        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+        //$stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
         $stmt->execute();
 
         return $stmt->fetchAll();
-        
-
     }
+
+    public function getIncomeCategoryNames(){
+
+        $sql = 'SELECT * FROM incomes_category_assigned_to_users WHERE user_id = :id';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
 
 
 }
