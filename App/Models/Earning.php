@@ -115,13 +115,6 @@ class Earning extends \Core\Model{
 
     }
 
-    /*
-    query("SELECT incomes.inc_cat_assigned_user_id, SUM(incomes.amount) 
-    AS amountOfIncomesByCategoryAndPeriodOfTime FROM incomes, incomes_category_assigned_to_users 
-    WHERE incomes.user_id = '$userID' AND incomes.date_of_income BETWEEN '$selectedStartDateString' AND '$selectedEndDateString' AND incomes.inc_cat_assigned_user_id = incomes_category_assigned_to_users.id 
-    GROUP BY incomes.inc_cat_assigned_user_id ORDER BY amountOfIncomesByCategoryAndPeriodOfTime DESC");
-    */
-
     public function getIncomesResult($startDate, $endDate){
 
         echo 'start date from Earning model = '.$startDate.'<br>';
@@ -140,7 +133,6 @@ class Earning extends \Core\Model{
         $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
         $stmt->bindParam(':endDate', $endDate, PDO::PARAM_STR);
 
-        //$stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
         $stmt->execute();

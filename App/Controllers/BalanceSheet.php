@@ -21,8 +21,11 @@ class BalanceSheet extends Authenticated{
 
     public function newAction(){
         View::renderTemplate('BalanceSheet/new.html');
-        $this->indicateTimePeriod();
-
+        
+        if($this->indicateStartDateAndEndDate()){
+            $this->matchIncomeIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
+        }
+        
         echo '<br>the namesOfIncomes table:<br>';
         print_r($this->namesOfIncomes);
 
@@ -30,7 +33,7 @@ class BalanceSheet extends Authenticated{
         print_r($this->amountOfIncomes);
     }
 
-    protected function indicateTimePeriod(){
+    protected function indicateStartDateAndEndDate(){
 
         $this->timePeriod = $_POST['timePeriod'] ?? NULL;
 
@@ -38,7 +41,6 @@ class BalanceSheet extends Authenticated{
         $this->selectedEndDate = new DateTime();
 
         $incomes = new Earning();
-        $sumOfIncomes = NULL;
         echo '<pre>';          
 
         if(isset($_POST['dateStart'])){
@@ -46,13 +48,17 @@ class BalanceSheet extends Authenticated{
             $this->selectedEndDateString = $_POST['dateEnd'];
 
             if($this->validateStartAndEndDates() == true){     
-                $this->matchIncomeIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
+                return true;
+            } else {
+                return false;
             }
         }
 
         if($this->timePeriod != NULL){
             $this->transferTimePeriodIntoDate();
-            $this->matchIncomeIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -75,7 +81,7 @@ class BalanceSheet extends Authenticated{
 
         } elseif($this->timePeriod == 'otherTime'){
 
-            $this->redirect('/BalanceSheet/getOtherTime');
+            $this->redirect('/BalanceSheet/getTheOtherTime');
            
         }
 
@@ -83,9 +89,9 @@ class BalanceSheet extends Authenticated{
         $this->selectedEndDateString = $this->selectedEndDate->format('Y-m-d');
     }
     
-    public function getOtherTime(){
+    public function getTheOtherTime(){
         View::renderTemplate('BalanceSheet/new.html', [
-            'choosenOtherTime' => 1
+            'choosenTheOtherTime' => 1
         ]);
     }
 
@@ -114,13 +120,6 @@ class BalanceSheet extends Authenticated{
                 } 
             }
         }
-        /*
-        echo '<br>the namesOfIncomes table:<br>';
-        print_r($namesOfIncomes);
-
-        echo '<br>the amountOfIncomes table:<br>';
-        print_r($amountOfIncomes);
-        */
     }
 }
 
