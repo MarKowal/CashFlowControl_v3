@@ -11,19 +11,22 @@ use App\Flash;
 
 class BalanceSheet extends Authenticated{
     
-    public $timePeriod;
+    protected $timePeriod;
     protected $selectedStartDate;
     protected $selectedEndDate;
-    public $selectedStartDateString;
-    public $selectedEndDateString;
+    protected $selectedStartDateString;
+    protected $selectedEndDateString;
     public $namesOfIncomes = [];
     public $amountOfIncomes = [];
+    public $namesOfExpenses = [];
+    public $amountOfExpenses = [];
 
     public function newAction(){
         View::renderTemplate('BalanceSheet/new.html');
         
         if($this->indicateStartDateAndEndDate()){
             $this->matchIncomeIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
+            $this->matchExpenseIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
         }
         
         echo '<br>the namesOfIncomes table:<br>';
@@ -31,6 +34,12 @@ class BalanceSheet extends Authenticated{
 
         echo '<br>the amountOfIncomes table:<br>';
         print_r($this->amountOfIncomes);
+
+        echo '<br>the namesOfExpenses table:<br>';
+        print_r($this->namesOfExpenses);
+
+        echo '<br>the amountOfExpenses table:<br>';
+        print_r($this->amountOfExpenses);
     }
 
     protected function indicateStartDateAndEndDate(){
@@ -121,6 +130,25 @@ class BalanceSheet extends Authenticated{
             }
         }
     }
+
+    protected function matchExpenseIdWithCategoryName($dateStart, $dateEnd){
+
+        $expenses = new Expenditure();
+
+        $sumOfExpenses = $expenses->getExpenseResult($dateStart, $dateEnd);
+        $allExpenseCategoryNames = $expenses->getExpenseCategoryNames();
+
+        for($i = 0; $i<count($sumOfExpenses); $i++){
+            for($n = 0; $n<count($allExpenseCategoryNames); $n++){ 
+                if($sumOfExpenses[$i]['exp_cat_assigned_user_id'] == $allExpenseCategoryNames[$n]['id']){
+                    $this->namesOfExpenses[$i] = $allExpenseCategoryNames[$n]['name'];
+                    $this->amountOfExpenses[$i] = $sumOfExpenses[$i]['amountOfExpensesByCategoryAndPeriodOfTime'];
+                    break;
+                } 
+            }
+        }
+    }
+
 }
 
 ?>

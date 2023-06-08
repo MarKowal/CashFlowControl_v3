@@ -174,6 +174,42 @@ class Expenditure extends \Core\Model{
         }
         return false;
     }
+
+    public function getExpenseResult($startDate, $endDate){
+
+        $user_id = $_SESSION['user_id'];
+
+        $sql = "SELECT expenses.exp_cat_assigned_user_id, SUM(expenses.amount) 
+        AS amountOfExpensesByCategoryAndPeriodOfTime FROM expenses, expenses_category_assigned_to_users 
+        WHERE expenses.user_id = :user_id AND expenses.date_of_expense BETWEEN :startDate AND :endDate 
+        AND expenses.exp_cat_assigned_user_id = expenses_category_assigned_to_users.id
+        GROUP BY expenses.exp_cat_assigned_user_id ORDER BY amountOfExpensesByCategoryAndPeriodOfTime DESC"; 
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
+        $stmt->bindParam(':endDate', $endDate, PDO::PARAM_STR);
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function getExpenseCategoryNames(){
+
+        $sql = 'SELECT * FROM expenses_category_assigned_to_users WHERE user_id = :id';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
 }
 
 ?>
