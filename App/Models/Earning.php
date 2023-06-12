@@ -117,8 +117,8 @@ class Earning extends \Core\Model{
 
     public function getIncomesResult($startDate, $endDate){
 
-        echo 'start date from Earning model = '.$startDate.'<br>';
-        echo 'end date from Earning model = '.$endDate.'<br>';
+        //echo 'start date from Earning model = '.$startDate.'<br>';
+        //echo 'end date from Earning model = '.$endDate.'<br>';
         $user_id = $_SESSION['user_id'];
 
         $sql = "SELECT incomes.inc_cat_assigned_user_id, SUM(incomes.amount) 

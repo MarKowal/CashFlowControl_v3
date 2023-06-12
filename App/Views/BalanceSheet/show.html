@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Balance sheet{% endblock %}
+
+{% block body %}
+    
+    <h1>Balance sheet</h1>
+
+    INCOMES:
+
+    <ul>
+        {% for name in namesOfIncomes %}
+            <li>{{ name }}</li>
+        {% endfor %}
+    </ul>
+    
+    <ul>
+        {% for amount in amountOfIncomes %}
+            <li>{{ amount }}</li>
+        {% endfor %}
+    </ul>
+    <br>
+    EXPENSES:
+    <ul>
+        {% for name in namesOfExpenses %}
+            <li>{{ name }}</li>
+        {% endfor %}
+    </ul>
+    
+    <ul>
+        {% for amount in amountOfExpenses %}
+            <li>{{ amount }}</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

@@ -23,15 +23,16 @@ class BalanceSheet extends Authenticated{
 
     public function newAction(){
         View::renderTemplate('BalanceSheet/new.html');
-        
+        /*
         if($this->indicateStartDateAndEndDate()){
             $this->matchIncomeIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
             $this->matchExpenseIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
+            print_r($this->namesOfIncomes);
         }
-        
-        echo '<br>the namesOfIncomes table:<br>';
-        print_r($this->namesOfIncomes);
 
+        //echo '<br>the namesOfIncomes table:<br>';
+       //print_r($this->namesOfIncomes);
+    /*
         echo '<br>the amountOfIncomes table:<br>';
         print_r($this->amountOfIncomes);
 
@@ -40,6 +41,24 @@ class BalanceSheet extends Authenticated{
 
         echo '<br>the amountOfExpenses table:<br>';
         print_r($this->amountOfExpenses);
+        */
+
+    }
+
+    public function showAction(){
+
+        if($this->indicateStartDateAndEndDate()){
+            $this->matchIncomeIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
+            $this->matchExpenseIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
+
+            View::renderTemplate('BalanceSheet/show.html', [
+                'namesOfIncomes' => $this->namesOfIncomes,
+                'amountOfIncomes' => $this->amountOfIncomes,
+                'namesOfExpenses' => $this->namesOfExpenses,
+                'amountOfExpenses' => $this->amountOfExpenses
+            ]);
+
+        }
     }
 
     protected function indicateStartDateAndEndDate(){
@@ -50,7 +69,6 @@ class BalanceSheet extends Authenticated{
         $this->selectedEndDate = new DateTime();
 
         $incomes = new Earning();
-        echo '<pre>';          
 
         if(isset($_POST['dateStart'])){
             $this->selectedStartDateString = $_POST['dateStart'];
@@ -148,7 +166,8 @@ class BalanceSheet extends Authenticated{
             }
         }
     }
-
+    
+    
 }
 
 ?>
