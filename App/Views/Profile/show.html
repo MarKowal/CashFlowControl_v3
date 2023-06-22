@@ -4,8 +4,25 @@
 
 {% block body %}
     
-<h1>Profile details</h1>
-    <!--HTML description list-->
+    <div class="row">
+        <div class="col-lg"></div>
+        <div class="col-lg">
+            <h1 class="text-center mt-3">Profile details</h1>
+            <dl>
+                <dt>Name</dt>
+                <dd>{{ user.name }}</dd>
+                <dt>Email</dt>
+                <dd>{{ user.email }}</dd>
+            </dl>
+            <a href="/profile/edit" type="button" class="btn btn-secondary">Edit</a>
+        </div>
+        <div class="col-lg"></div>
+    </div>
+
+<!-- 
+    <br><br>
+    <h1>Profile details</h1>
+    HTML description list
     <dl>
         <dt>Name</dt>
         <dd>{{ user.name }}</dd>
@@ -13,5 +30,57 @@
         <dd>{{ user.email }}</dd>
     </dl>
     <br><a href="/profile/edit">Edit</a>
+-->
+
+
+
+    <!--
+    <br><br>
+    <div class="container">
+        <h1>Grid</h1>
+        <div class="row align-items-end">
+            <div class="col-lg">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus quod omnis dolore velit voluptate nemo ut quam suscipit expedita. Impedit odio quas similique dolor incidunt expedita saepe minus totam asperiores.
+                    Harum debitis ratione dolorem qui! Dolorem ducimus vel voluptas quasi ipsa impedit architecto fugit minima voluptate blanditiis alias, veniam vero aperiam ad repellat similique eum nobis dicta qui rerum totam!
+                    Hic provident placeat id molestiae, animi veniam atque nulla ipsum delectus earum reprehenderit quo! Vitae minus, sequi aperiam rerum est ducimus. Delectus ad nemo fugit asperiores, libero repellendus aliquam porro!
+                </p>
+            </div>
+            <div class="col-lg bg-info">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus quod omnis dolore velit voluptate nemo ut quam suscipit expedita. Impedit odio quas similique dolor incidunt expedita saepe minus totam asperiores.
+                    Harum debitis ratione dolorem qui! Dolorem ducimus vel voluptas quasi ipsa impedit architecto fugit minima voluptate blanditiis alias, veniam vero aperiam ad repellat similique eum nobis dicta qui rerum totam!
+                    Hic provident placeat id molestiae, animi veniam atque nulla ipsum delectus earum reprehenderit quo! Vitae minus, sequi aperiam rerum est ducimus. Delectus ad nemo fugit asperiores, libero repellendus aliquam porro!
+                    Dolores saepe quis praesentium temporibus quisquam obcaecati perspiciatis esse vel voluptates voluptas nemo fugit neque cum magni sed, voluptatem nostrum. Eius natus eaque beatae voluptates velit cumque, quia dolor. Esse.
+                    Nihil dolores ratione facilis, harum ducimus fugiat reiciendis blanditiis doloribus sed perferendis labore in suscipit quod repudiandae quas. Fugit possimus dolorem odio voluptates quasi rem sed, ullam eligendi libero earum.
+                    Accusamus rem officia assumenda totam maxime recusandae similique explicabo libero unde, iusto, obcaecati illo placeat dolorem ipsum? Molestias ullam maiores alias eveniet molestiae iusto beatae perferendis culpa quas magni? Est.
+                    Qui alias ab cumque deleniti. Exercitationem cum provident incidunt expedita blanditiis ratione. Autem voluptatibus odit reiciendis at error saepe optio odio, inventore cumque incidunt, sint facere tempore vero? Cum, obcaecati.
+                    Quaerat distinctio cupiditate eos sunt ut laboriosam placeat, temporibus, esse unde voluptates quia magnam! Minus ipsam dolor optio eaque hic, natus a deserunt asperiores sit nihil praesentium tempore explicabo possimus!
+                    Aliquid vero magni saepe dolore non, placeat veritatis quam obcaecati quae a rerum voluptas quibusdam sit deleniti temporibus possimus eius corrupti incidunt maiores hic amet qui iusto illum sapiente. Maxime.
+                    Nam delectus odit consectetur minus recusandae doloremque vero voluptatibus necessitatibus magnam itaque ex ipsam laudantium, possimus modi. Doloremque, non perspiciatis mollitia impedit ducimus aperiam ut aspernatur ipsa architecto labore dolores.
+                </p>
+            </div>
+            <div class="col-lg align-self-center">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus quod omnis dolore velit voluptate nemo ut quam suscipit expedita. Impedit odio quas similique dolor incidunt expedita saepe minus totam asperiores.
+                    Harum debitis ratione dolorem qui! Dolorem ducimus vel voluptas quasi ipsa impedit architecto fugit minima voluptate blanditiis alias, veniam vero aperiam ad repellat similique eum nobis dicta qui rerum totam!
+                    Hic provident placeat id molestiae, animi veniam atque nulla ipsum delectus earum reprehenderit quo! Vitae minus, sequi aperiam rerum est ducimus. Delectus ad nemo fugit asperiores, libero repellendus aliquam porro!                   
+                </p>
+            </div>
+        </div>
+
+        <h1>Justify content</h1>
+        <div class="row justify-content-between">
+            <div class="col-4 bg-primary border">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Temporibus hic ipsam provident quaerat, tempore ea, adipisci numquam totam cupiditate, voluptatibus ex fugiat voluptates eaque unde rem qui pariatur illum amet!
+            </div>
+            <div class="col-4 bg-warning border">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Temporibus hic ipsam provident quaerat, tempore ea, adipisci numquam totam cupiditate, voluptatibus ex fugiat voluptates eaque unde rem qui pariatur illum amet!
+            </div>
+
+
+
+
+        </div>
+    </div>
+    -->
+
 
 {% endblock %}
