@@ -6,6 +6,16 @@ use PDO;
 
 class Expenditure extends \Core\Model{
 
+    public $amount;
+    public $date;
+    public $paymentCategory;
+    public $expenseCategory;
+    public $expenseComment;
+    public $id;
+    public $user_id;
+    public $name;
+
+
     public $errors = []; 
 
     public function __construct($data = []){

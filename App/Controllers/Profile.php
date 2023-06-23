@@ -10,6 +10,8 @@ use \App\Flash;
 //żeby user był już zalogowany to trzeba dziedziczyć po Athenticated
 class Profile extends Authenticated{
 
+    public $user;
+
     protected function before(){
         parent::before();
         $this->user = Auth::getUser();

@@ -7,6 +7,11 @@ use PDO;
 
 class RememberedLogin extends \Core\Model{
 
+    public $token_hash;
+    public $user_id;
+    public $expires_at;
+
+
     public static function findByToken($token){
         //dostaję czysty token z cookie i hashuję go
         $token = new Token($token);

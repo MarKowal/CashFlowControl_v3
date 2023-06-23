@@ -9,6 +9,24 @@ use Core\View;
 
 class User extends \Core\Model{
 
+    //Uncaught exception: 'ErrorException'
+    //Message: 'Creation of dynamic property App\Models\User::$expiry_timestamp is deprecated'
+
+    public $id;
+    public $name;
+    public $email;
+    public $password_hash;
+    public $password_reset_hash;
+    public $password_reset_expiry;
+    public $activation_hash;
+    public $is_active;
+    public $password;
+    public $remember_token;
+    public $expiry_timestamp;
+    public $password_reset_token ;
+
+
+
     public $errors = []; 
 
     public function __construct($data = []){

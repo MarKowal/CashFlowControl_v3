@@ -6,6 +6,16 @@ use PDO;
 
 class Earning extends \Core\Model{
 
+    
+    public $amount;
+    public $date;
+    public $incomeCategory;
+    public $incomeComment;
+    public $id;
+    public $user_id;
+    public $name;
+
+
     public $errors = []; 
 
     public function __construct($data = []){
