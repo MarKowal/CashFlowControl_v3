@@ -6,7 +6,7 @@
     
     <div class="row">
         <div class="col-lg"></div>
-        <div class="col-lg">
+        <div class="col-lg-3">
             <h1 class="text-center mt-3">Profile details</h1>
             <dl>
                 <dt>Name</dt>
@@ -14,9 +14,12 @@
                 <dt>Email</dt>
                 <dd>{{ user.email }}</dd>
             </dl>
-            <a href="/profile/edit" type="button" class="btn btn-secondary">Edit</a>
+            <div class="d-flex justify-content-center">
+                <a href="/profile/edit" type="button" class="btn btn-secondary">Edit</a>
+            </div>
         </div>
         <div class="col-lg"></div>
+
     </div>
 
 <!-- 
