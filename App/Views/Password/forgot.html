@@ -4,8 +4,9 @@
 
 {% block body %}
     
-<h1>Request password reset</h1>
-    
+<h1 class="text-center mt-3 mb-5">Request password reset</h1>
+
+<!-- 
 <form method="post" action="/password/requestReset">
     <div>
         <label for="inputEmail">Email address</label>
@@ -14,6 +15,24 @@
 
     <button type="submit">Send password reset</button>
 </form>
+-->
 
+<div class="row">
+    <div class="col-lg"></div>
+    <form method="post" action="/password/requestReset" class="col-lg">
+        <div class="form-group">
+            <div>
+                <label for="inputEmail" class="col-form-label">Email address</label>
+                <div class="col mb-3">
+                    <input type="email" id="inputEmail" name="email" placeholder="Email" autofocus required class="form-control">
+                </div>
+            </div>  
+            <div class="d-flex justify-content-center mt-3">
+                <button type="submit" class="btn btn-secondary m-2">Send password reset</button>
+            </div>
+        </div>  
+    </form>
+    <div class="col-lg"></div>
+</div>  
 
 {% endblock %}
