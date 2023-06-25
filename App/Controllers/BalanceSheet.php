@@ -20,6 +20,10 @@ class BalanceSheet extends Authenticated{
     public $amountOfIncomes = [];
     public $namesOfExpenses = [];
     public $amountOfExpenses = [];
+    public $numberOfIncomes = [];
+    public $sumOfIncomes = NULL;
+    public $numberOfExpenses = [];
+    public $sumOfExpenses = NULL;
 
     public function newAction(){
         View::renderTemplate('BalanceSheet/new.html');
@@ -48,14 +52,26 @@ class BalanceSheet extends Authenticated{
     public function showAction(){
 
         if($this->indicateStartDateAndEndDate()){
-            $this->matchIncomeIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
-            $this->matchExpenseIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
 
+            $this->matchIncomeIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
+            $this->countNumberOfIncomes($this->namesOfIncomes);
+            $this->sumUpIncomes($this->amountOfIncomes);
+
+            $this->matchExpenseIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
+            $this->countNumberOfExpenses($this->namesOfExpenses);
+            $this->sumUpExpenses($this->amountOfExpenses);
+
+            
             View::renderTemplate('BalanceSheet/show.html', [
                 'namesOfIncomes' => $this->namesOfIncomes,
                 'amountOfIncomes' => $this->amountOfIncomes,
+                'numberOfIncomes' => $this->numberOfIncomes,
+                'sumOfIncomes' => $this->sumOfIncomes,
+
                 'namesOfExpenses' => $this->namesOfExpenses,
-                'amountOfExpenses' => $this->amountOfExpenses
+                'amountOfExpenses' => $this->amountOfExpenses,
+                'numberOfExpenses' => $this->numberOfExpenses,
+                'sumOfExpenses' => $this->sumOfExpenses
             ]);
 
         }
@@ -167,7 +183,29 @@ class BalanceSheet extends Authenticated{
         }
     }
     
+    protected function countNumberOfIncomes($nameOfIncomes){
+        $i = NULL;
+        for($i = 1; $i<count($nameOfIncomes)+1; $i++){
+            $this->numberOfIncomes[$i] = $i;
+        }
+    }
     
+    protected function sumUpIncomes($amountOfIncomes){
+        $this->sumOfIncomes = array_sum($amountOfIncomes);
+    }
+
+    protected function countNumberOfExpenses($namesOfExpenses){
+        $i = NULL;
+        for($i = 1; $i<count($namesOfExpenses)+1; $i++){
+            $this->numberOfExpenses[$i] = $i;
+        }
+    }
+    
+    protected function sumUpExpenses($amountOfExpenses){
+        $this->sumOfExpenses = array_sum($amountOfExpenses);
+    }
+
+
 }
 
 ?>

@@ -6,31 +6,118 @@
     
     <h1 class="text-center mt-3 mb-5">Balance sheet</h1>
 
-    INCOMES:
 
-    <ul>
-        {% for name in namesOfIncomes %}
-            <li>{{ name }}</li>
-        {% endfor %}
-    </ul>
-    
-    <ul>
-        {% for amount in amountOfIncomes %}
-            <li>{{ amount }}</li>
-        {% endfor %}
-    </ul>
-    <br>
-    EXPENSES:
-    <ul>
+    <div class="row">
+        <div class="col-lg">
+
+            <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Category of Income</th>
+                    <th scope="col">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">22</th>
+                        <td>Kevin</td>
+                        <td>Black</td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <th scope="row">xx</th>
+                        <th>Total Incomes</td>
+                        <th>{{ sumOfIncomes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- https://stackoverflow.com/questions/10299202/twig-for-loop-for-arrays-with-keys -->
+
+        <div class="col-lg">
+           
+
+            <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Category of Expense</th>
+                    <th scope="col">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">33</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <th scope="row">xx</th>
+                        <th>Total Expenses</td>
+                        <th>{{ sumOfExpenses }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+    <div class="row">
+        <div class="col-lg">
+
+        INCOMES:
+
+        <ul>
+            {% for number in numberOfIncomes %}
+                <li>{{ number }}</li>
+            {% endfor %}
+        </ul>
+        <ul>
+            {% for name in namesOfIncomes %}
+                <li>{{ name }}</li>
+            {% endfor %}
+        </ul>
+        
+        <ul>
+            {% for amount in amountOfIncomes %}
+                <li>{{ amount }}</li>
+            {% endfor %}
+        </ul>
+        <p>sumOfIncomes = {{ sumOfIncomes }}</p>
+        <br>
+        EXPENSES:
+        <ul>
+            {% for number in numberOfExpenses %}
+                <li>{{ number }}</li>
+            {% endfor %}
+        </ul>
+        <ul>
+            {% for name in namesOfExpenses %}
+                <li>{{ name }}</li>
+            {% endfor %}
+        </ul>
+        
+        <ul>
+            {% for key, amount in amountOfExpenses %}
+                <li>key = {{ key }}</li>
+                <li>amount = {{ amount }}</li>
+            {% endfor %}
+        </ul>
+        <p>sumOfExpenses = {{ sumOfExpenses }}</p>
+
+
         {% for name in namesOfExpenses %}
-            <li>{{ name }}</li>
+            <p>{{ loop.index0 }} - {{ name }}</p>
         {% endfor %}
-    </ul>
-    
-    <ul>
-        {% for amount in amountOfExpenses %}
-            <li>{{ amount }}</li>
-        {% endfor %}
-    </ul>
+
+
+
+    </div>
+
 
 {% endblock %}
