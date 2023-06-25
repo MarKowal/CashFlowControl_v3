@@ -49,10 +49,8 @@
                 </div>
             </div>
             <div class="checkbox">
-                <label for="">
-                    <input type="checkbox" name="remember_me" 
-                    {% if remember_me %} checked="checked" {% endif %}
-                    >
+                <label for="remember_me">
+                    <input type="checkbox" name="remember_me" {% if remember_me %} checked="checked" {% endif %} id="remember_me">
                     Remember me
                 </label>
             </div>

@@ -126,7 +126,7 @@ class BalanceSheet extends Authenticated{
         if($this->selectedStartDateString < $this->selectedEndDateString){
             return true;
         } else {
-            Flash::addMessages('Sorry, start-date cannot be later than end-date. Try again.', 'warning');
+            Flash::addMessages('Start date cannot be later than End date. Try again.', 'warning');
             $this->redirect('/BalanceSheet/new');
         }
     }
