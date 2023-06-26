@@ -19,23 +19,23 @@
                   </tr>
                 </thead>
                 <tbody>
+                    {% for row in balanceOfIncomes|batch(3, 'brak') %}
                     <tr>
-                        <th scope="row">22</th>
-                        <td>Kevin</td>
-                        <td>Black</td>
+                        {% for column in row %}
+                            <td>{{ column }}</td>
+                        {% endfor %}
                     </tr>
+                    {% endfor %}
                 </tbody>
                 <tbody>
                     <tr>
-                        <th scope="row">xx</th>
+                        <th scope="row">#</th>
                         <th>Total Incomes</td>
                         <th>{{ sumOfIncomes }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-
-        <!-- https://stackoverflow.com/questions/10299202/twig-for-loop-for-arrays-with-keys -->
 
         <div class="col-lg">
            
@@ -66,7 +66,7 @@
         </div>
 
 
-
+    <!--  
     <div class="row">
         <div class="col-lg">
 
@@ -89,6 +89,24 @@
             {% endfor %}
         </ul>
         <p>sumOfIncomes = {{ sumOfIncomes }}</p>
+        
+        <ul>
+            {% for item in balanceOfIncomes %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+
+        <table>
+            {% for row in balanceOfIncomes|batch(3, 'brak') %}
+            <tr>
+                {% for column in row %}
+                    <td>{{ column }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+
+        <p>-----------------------------</p>
         <br>
         EXPENSES:
         <ul>
@@ -115,9 +133,7 @@
             <p>{{ loop.index0 }} - {{ name }}</p>
         {% endfor %}
 
-
-
     </div>
-
+    -->
 
 {% endblock %}
