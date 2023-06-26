@@ -16,38 +16,19 @@ class BalanceSheet extends Authenticated{
     protected $selectedEndDate;
     protected $selectedStartDateString;
     protected $selectedEndDateString;
-    public $namesOfIncomes = [];
-    public $amountOfIncomes = [];
-    public $namesOfExpenses = [];
-    public $amountOfExpenses = [];
-    public $numberOfIncomes = [];
+    protected $namesOfIncomes = [];
+    protected $amountOfIncomes = [];
+    protected $namesOfExpenses = [];
+    protected $amountOfExpenses = [];
+    protected $numberOfIncomes = [];
     public $sumOfIncomes = NULL;
-    public $numberOfExpenses = [];
+    protected $numberOfExpenses = [];
     public $sumOfExpenses = NULL;
     public $balanceOfIncomes = [];
+    public $balanceOfExpenses = [];
 
     public function newAction(){
         View::renderTemplate('BalanceSheet/new.html');
-        /*
-        if($this->indicateStartDateAndEndDate()){
-            $this->matchIncomeIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
-            $this->matchExpenseIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
-            print_r($this->namesOfIncomes);
-        }
-
-        //echo '<br>the namesOfIncomes table:<br>';
-       //print_r($this->namesOfIncomes);
-    /*
-        echo '<br>the amountOfIncomes table:<br>';
-        print_r($this->amountOfIncomes);
-
-        echo '<br>the namesOfExpenses table:<br>';
-        print_r($this->namesOfExpenses);
-
-        echo '<br>the amountOfExpenses table:<br>';
-        print_r($this->amountOfExpenses);
-        */
-
     }
 
     public function showAction(){
@@ -57,26 +38,19 @@ class BalanceSheet extends Authenticated{
             $this->matchIncomeIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
             $this->countNumberOfIncomes($this->namesOfIncomes);
             $this->sumUpIncomes($this->amountOfIncomes);
-            $this->balanceOfIncomes = $this->makeBalanceOfIncomes($this->numberOfIncomes, $this->namesOfIncomes, $this->amountOfIncomes);
-
-           // var_dump($this->balanceOfIncomes);
+            $this->balanceOfIncomes = $this->makeBalanceSheet($this->numberOfIncomes, $this->namesOfIncomes, $this->amountOfIncomes);
 
             $this->matchExpenseIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
             $this->countNumberOfExpenses($this->namesOfExpenses);
             $this->sumUpExpenses($this->amountOfExpenses);
-
+            $this->balanceOfExpenses = $this->makeBalanceSheet($this->numberOfExpenses, $this->namesOfExpenses, $this->amountOfExpenses);
 
             View::renderTemplate('BalanceSheet/show.html', [
-                'namesOfIncomes' => $this->namesOfIncomes,
-                'amountOfIncomes' => $this->amountOfIncomes,
-                'numberOfIncomes' => $this->numberOfIncomes,
                 'sumOfIncomes' => $this->sumOfIncomes,
                 'balanceOfIncomes' => $this->balanceOfIncomes,
+                'sumOfExpenses' => $this->sumOfExpenses,
+                'balanceOfExpenses' => $this->balanceOfExpenses
 
-                'namesOfExpenses' => $this->namesOfExpenses,
-                'amountOfExpenses' => $this->amountOfExpenses,
-                'numberOfExpenses' => $this->numberOfExpenses,
-                'sumOfExpenses' => $this->sumOfExpenses
             ]);
 
         }
@@ -201,8 +175,8 @@ class BalanceSheet extends Authenticated{
 
     protected function countNumberOfExpenses($namesOfExpenses){
         $i = NULL;
-        for($i = 1; $i<count($namesOfExpenses)+1; $i++){
-            $this->numberOfExpenses[$i] = $i;
+        for($i = 0; $i<count($namesOfExpenses); $i++){
+            $this->numberOfExpenses[$i] = $i+1;
         }
     }
     
@@ -210,33 +184,17 @@ class BalanceSheet extends Authenticated{
         $this->sumOfExpenses = array_sum($amountOfExpenses);
     }
 
-    protected function makeBalanceOfIncomes($number, $names, $amounts){
-        
-        //echo '<pre>';
-        //var_dump(count($number));
-        //var_dump($number);
-        //var_dump($names);
-        //var_dump($amounts);
-
+    protected function makeBalanceSheet($number, $names, $amounts){
+    
         $balance = [];
         $x = 0;
         $y = 0;
 
         while($y < count($number)){
-            /*
-             $this->balanceOfIncomes[$i] = $number[$y];
-             $this->balanceOfIncomes[$i+1] = $names[$y];
-             $this->balanceOfIncomes[$i+2] = $amounts[$y];
-             $y++;
-             $i+3;
-            */
-
+      
              $balance[$x] = $number[$y];
              $balance[$x+1] = $names[$y];
              $balance[$x+2] = $amounts[$y];
-             //   echo ' x = '.$x.'<br>';
-            //    echo '---'.var_dump($balance).'<br>';
-
              $y++;
              $x = $x + 3;
         }          

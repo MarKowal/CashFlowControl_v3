@@ -19,7 +19,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                    {% for row in balanceOfIncomes|batch(3, 'brak') %}
+                    {% for row in balanceOfIncomes|batch(3, 'none') %}
                     <tr>
                         {% for column in row %}
                             <td>{{ column }}</td>
@@ -30,7 +30,7 @@
                 <tbody>
                     <tr>
                         <th scope="row">#</th>
-                        <th>Total Incomes</td>
+                        <th>Total Incomes:</td>
                         <th>{{ sumOfIncomes }}</td>
                     </tr>
                 </tbody>
@@ -49,91 +49,23 @@
                   </tr>
                 </thead>
                 <tbody>
+                    {% for row in balanceOfExpenses|batch(3, 'none') %}
                     <tr>
-                        <th scope="row">33</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
+                        {% for column in row %}
+                            <td>{{ column }}</td>
+                        {% endfor %}
                     </tr>
+                    {% endfor %}
                 </tbody>
                 <tbody>
                     <tr>
-                        <th scope="row">xx</th>
-                        <th>Total Expenses</td>
+                        <th scope="row">#</th>
+                        <th>Total Expenses:</td>
                         <th>{{ sumOfExpenses }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-
-    <!--  
-    <div class="row">
-        <div class="col-lg">
-
-        INCOMES:
-
-        <ul>
-            {% for number in numberOfIncomes %}
-                <li>{{ number }}</li>
-            {% endfor %}
-        </ul>
-        <ul>
-            {% for name in namesOfIncomes %}
-                <li>{{ name }}</li>
-            {% endfor %}
-        </ul>
         
-        <ul>
-            {% for amount in amountOfIncomes %}
-                <li>{{ amount }}</li>
-            {% endfor %}
-        </ul>
-        <p>sumOfIncomes = {{ sumOfIncomes }}</p>
-        
-        <ul>
-            {% for item in balanceOfIncomes %}
-                <li>{{ item }}</li>
-            {% endfor %}
-        </ul>
-
-        <table>
-            {% for row in balanceOfIncomes|batch(3, 'brak') %}
-            <tr>
-                {% for column in row %}
-                    <td>{{ column }}</td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </table>
-
-        <p>-----------------------------</p>
-        <br>
-        EXPENSES:
-        <ul>
-            {% for number in numberOfExpenses %}
-                <li>{{ number }}</li>
-            {% endfor %}
-        </ul>
-        <ul>
-            {% for name in namesOfExpenses %}
-                <li>{{ name }}</li>
-            {% endfor %}
-        </ul>
-        
-        <ul>
-            {% for key, amount in amountOfExpenses %}
-                <li>key = {{ key }}</li>
-                <li>amount = {{ amount }}</li>
-            {% endfor %}
-        </ul>
-        <p>sumOfExpenses = {{ sumOfExpenses }}</p>
-
-
-        {% for name in namesOfExpenses %}
-            <p>{{ loop.index0 }} - {{ name }}</p>
-        {% endfor %}
-
-    </div>
-    -->
-
 {% endblock %}
