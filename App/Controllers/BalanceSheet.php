@@ -26,6 +26,9 @@ class BalanceSheet extends Authenticated{
     private $sumOfExpenses = NULL;
     private $balanceOfIncomes = [];
     private $balanceOfExpenses = [];
+    private $flagForBalanceMessage = NULL;
+    private $balanceMessage = NULL;
+
 
     public function newAction(){
         View::renderTemplate('BalanceSheet/new.html');
@@ -45,13 +48,16 @@ class BalanceSheet extends Authenticated{
             $this->sumOfExpenses = $this->sumUpCashFlow($this->amountOfExpenses);
             $this->balanceOfExpenses = $this->makeBalanceSheet($this->numberOfExpenses, $this->namesOfExpenses, $this->amountOfExpenses);
 
+            $this->makeMessageAfterBalance();
+
             View::renderTemplate('BalanceSheet/show.html', [
                 'sumOfIncomes' => $this->sumOfIncomes,
                 'balanceOfIncomes' => $this->balanceOfIncomes,
                 'sumOfExpenses' => $this->sumOfExpenses,
-                'balanceOfExpenses' => $this->balanceOfExpenses
+                'balanceOfExpenses' => $this->balanceOfExpenses,
+                'flagForBalanceMessage' => $this->flagForBalanceMessage,
+                'balanceMessage' => $this->balanceMessage
             ]);
-
         }
     }
 
@@ -195,6 +201,18 @@ class BalanceSheet extends Authenticated{
 
         return  $balance;
     }
+
+    protected function makeMessageAfterBalance(){
+
+        if ($this->sumOfIncomes > $this->sumOfExpenses){
+            $this->flagForBalanceMessage = '1';
+            $this->balanceMessage = 'Very Good! You have savings.';
+        } elseif ($this->sumOfIncomes <= $this->sumOfExpenses){
+            $this->balanceMessage = 'Sorry! Could be better.';
+        } 
+    }
+    
+
 }
 
 ?>
