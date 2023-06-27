@@ -11,21 +11,21 @@ use App\Flash;
 
 class BalanceSheet extends Authenticated{
     
-    protected $timePeriod;
-    protected $selectedStartDate;
-    protected $selectedEndDate;
-    protected $selectedStartDateString;
-    protected $selectedEndDateString;
-    protected $namesOfIncomes = [];
-    protected $amountOfIncomes = [];
-    protected $namesOfExpenses = [];
-    protected $amountOfExpenses = [];
-    protected $numberOfIncomes = [];
-    public $sumOfIncomes = NULL;
-    protected $numberOfExpenses = [];
-    public $sumOfExpenses = NULL;
-    public $balanceOfIncomes = [];
-    public $balanceOfExpenses = [];
+    private $timePeriod;
+    private $selectedStartDate;
+    private $selectedEndDate;
+    private $selectedStartDateString;
+    private $selectedEndDateString;
+    private $namesOfIncomes = [];
+    private $amountOfIncomes = [];
+    private $namesOfExpenses = [];
+    private $amountOfExpenses = [];
+    private $numberOfIncomes = [];
+    private $numberOfExpenses = [];
+    private $sumOfIncomes = NULL;
+    private $sumOfExpenses = NULL;
+    private $balanceOfIncomes = [];
+    private $balanceOfExpenses = [];
 
     public function newAction(){
         View::renderTemplate('BalanceSheet/new.html');
@@ -36,13 +36,13 @@ class BalanceSheet extends Authenticated{
         if($this->indicateStartDateAndEndDate()){
 
             $this->matchIncomeIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
-            $this->countNumberOfIncomes($this->namesOfIncomes);
-            $this->sumUpIncomes($this->amountOfIncomes);
+            $this->numberOfIncomes = $this->countNumberOfItems($this->namesOfIncomes);
+            $this->sumOfIncomes = $this->sumUpCashFlow($this->amountOfIncomes);
             $this->balanceOfIncomes = $this->makeBalanceSheet($this->numberOfIncomes, $this->namesOfIncomes, $this->amountOfIncomes);
 
             $this->matchExpenseIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
-            $this->countNumberOfExpenses($this->namesOfExpenses);
-            $this->sumUpExpenses($this->amountOfExpenses);
+            $this->numberOfExpenses = $this->countNumberOfItems($this->namesOfExpenses);
+            $this->sumOfExpenses = $this->sumUpCashFlow($this->amountOfExpenses);
             $this->balanceOfExpenses = $this->makeBalanceSheet($this->numberOfExpenses, $this->namesOfExpenses, $this->amountOfExpenses);
 
             View::renderTemplate('BalanceSheet/show.html', [
@@ -50,7 +50,6 @@ class BalanceSheet extends Authenticated{
                 'balanceOfIncomes' => $this->balanceOfIncomes,
                 'sumOfExpenses' => $this->sumOfExpenses,
                 'balanceOfExpenses' => $this->balanceOfExpenses
-
             ]);
 
         }
@@ -161,27 +160,22 @@ class BalanceSheet extends Authenticated{
             }
         }
     }
-    
-    protected function countNumberOfIncomes($nameOfIncomes){
-        $i = NULL;
-        for($i = 0; $i<count($nameOfIncomes); $i++){
-            $this->numberOfIncomes[$i] = $i+1;
-        }
-    }
-    
-    protected function sumUpIncomes($amountOfIncomes){
-        $this->sumOfIncomes = array_sum($amountOfIncomes);
-    }
 
-    protected function countNumberOfExpenses($namesOfExpenses){
+    protected function countNumberOfItems($nameOfIncomes){
         $i = NULL;
-        for($i = 0; $i<count($namesOfExpenses); $i++){
-            $this->numberOfExpenses[$i] = $i+1;
+        $numberOfItems = [];
+
+        for($i = 0; $i<count($nameOfIncomes); $i++){
+            $numberOfItems[$i] = $i+1;
         }
+
+        return  $numberOfItems;
     }
     
-    protected function sumUpExpenses($amountOfExpenses){
-        $this->sumOfExpenses = array_sum($amountOfExpenses);
+    protected function sumUpCashFlow($amountOfIncomes){
+        $cashFlow = [];
+        $cashFlow = array_sum($amountOfIncomes);
+        return $cashFlow;
     }
 
     protected function makeBalanceSheet($number, $names, $amounts){
