@@ -3,13 +3,13 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-    
+    <!--
     <h1>Welcome in CashFlowControl_v3</h1>
-    <!--<p>Hello from a Twig template {{ name }} {{title }}!</p>-->
+    <p>Hello from a Twig template {{ name }} {{title }}!</p>
 
     {% if current_user %}
-        <!-- User with ID: {{ session.user_id }} is logged in.
-        <a href="/login/destroy">Log out</a>-->
+         User with ID: {{ session.user_id }} is logged in.
+        <a href="/login/destroy">Log out</a>
         
         <p>Hello {{ current_user.name }}!</p><br>
         
@@ -17,6 +17,22 @@
     {% else %}
         <a href="/signup/new">Sign up</a> or <a href="/login">Login</a><br>
     {% endif %}
+    -->
 
+    <div class="row">
+        <div class="col-lg"></div>
+        <div class="col-lg">
+            <h1 class="text-center mt-3 mb-3">Welcome!</h1>
+            {% if current_user %}
+            <h5 class="text-center mt-3">Hello {{ current_user.name }}.</h5>
+            {% else %}    
+            <div class="d-flex justify-content-center">
+                <a href="/signup/new" type="button" class="btn btn-primary m-3">Sign up</a>
+                <a href="/login" type="button" class="btn btn-primary m-3">Login</a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-lg"></div>
+    </div>
 
 {% endblock %}

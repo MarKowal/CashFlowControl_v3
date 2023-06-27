@@ -23,7 +23,8 @@ class User extends \Core\Model{
     public $password;
     public $remember_token;
     public $expiry_timestamp;
-    public $password_reset_token ;
+    public $password_reset_token;
+    public $activation_token;
 
 
 

@@ -4,33 +4,51 @@
 
 {% block body %}
     
-    <h1>Balance sheet</h1>
-
-    <form method="post" action="/balancesheet/show">
-            <select class="form-select mt-4 mb-2" name="timePeriod">
-                <option disabled selected>Select the time period</option>
-                <option value="presentMonth">Present month</option>
-                <option value="previousMonth">Previous month</option>
-                <option value="presentYear">Present year</option>
-                <option value="otherTime">Other time</option>
-            </select>
-           
-
-            {% if choosenTheOtherTime is not empty %}
-            <div>
-                <label for="inputDate">Date</label>
-                <input type="date" name="dateStart" id="inputDate">
-            </div>    
-            <div>
-                <label for="inputDate">Date</label>
-                <input type="date" name="dateEnd" id="inputDate">
-            </div> 
-            {% endif %}
-    
+    <h1 class="text-center mt-3 mb-5">Balance sheet</h1>
 
 
-            <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+    <div class="row">
+        <div class="col-lg"></div>
+        <form method="post" action="/balancesheet/show" class="col-lg">
+            <div class="form-group">
+
+                {% if choosenTheOtherTime is empty %}
+                <select class="form-select mb-2 col-6" name="timePeriod">
+                    <option disabled selected>Select the time period</option>
+                    <option value="presentMonth">Present month</option>
+                    <option value="previousMonth">Previous month</option>
+                    <option value="presentYear">Present year</option>
+                    <option value="otherTime">Other time</option>
+                </select>
+
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="submit" class="btn btn-success m-2">Submit</button>
+                </div>
+                {% endif %}
+
+                {% if choosenTheOtherTime is not empty %}
+                <div>
+                    <label for="inputDate" class="col-form-label">Start date</label>
+                    <div class="col-4 mb-3">
+                        <input type="date" name="dateStart" id="inputDate" required class="form-control">
+                    </div>
+                </div>    
+                <div>
+                    <label for="inputDate" class="col-form-label">End date</label>
+                    <div class="col-4 mb-3">
+                        <input type="date" name="dateEnd" id="inputDate" required class="form-control">
+                    </div>
+                </div>  
+
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="submit" class="btn btn-success m-2">Submit</button>
+                </div>
+                {% endif %}
+
+            </div>
+        </form>
+        <div class="col-lg"></div>
+    </div>
 
 
 {% endblock %}

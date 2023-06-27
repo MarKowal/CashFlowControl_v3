@@ -4,33 +4,68 @@
 
 {% block body %}
     
-    <h1>Balance sheet</h1>
+    <h1 class="text-center mt-3 mb-5">Balance sheet</h1>
 
-    INCOMES:
 
-    <ul>
-        {% for name in namesOfIncomes %}
-            <li>{{ name }}</li>
-        {% endfor %}
-    </ul>
-    
-    <ul>
-        {% for amount in amountOfIncomes %}
-            <li>{{ amount }}</li>
-        {% endfor %}
-    </ul>
-    <br>
-    EXPENSES:
-    <ul>
-        {% for name in namesOfExpenses %}
-            <li>{{ name }}</li>
-        {% endfor %}
-    </ul>
-    
-    <ul>
-        {% for amount in amountOfExpenses %}
-            <li>{{ amount }}</li>
-        {% endfor %}
-    </ul>
+    <div class="row">
+        <div class="col-lg">
 
+            <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Category of Income</th>
+                    <th scope="col">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for row in balanceOfIncomes|batch(3, 'none') %}
+                    <tr>
+                        {% for column in row %}
+                            <td>{{ column }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tbody>
+                    <tr>
+                        <th scope="row">#</th>
+                        <th>Total Incomes:</td>
+                        <th>{{ sumOfIncomes }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-lg">
+           
+
+            <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Category of Expense</th>
+                    <th scope="col">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for row in balanceOfExpenses|batch(3, 'none') %}
+                    <tr>
+                        {% for column in row %}
+                            <td>{{ column }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tbody>
+                    <tr>
+                        <th scope="row">#</th>
+                        <th>Total Expenses:</td>
+                        <th>{{ sumOfExpenses }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        
 {% endblock %}

@@ -11,51 +11,45 @@ use App\Flash;
 
 class BalanceSheet extends Authenticated{
     
-    protected $timePeriod;
-    protected $selectedStartDate;
-    protected $selectedEndDate;
-    protected $selectedStartDateString;
-    protected $selectedEndDateString;
-    public $namesOfIncomes = [];
-    public $amountOfIncomes = [];
-    public $namesOfExpenses = [];
-    public $amountOfExpenses = [];
+    private $timePeriod;
+    private $selectedStartDate;
+    private $selectedEndDate;
+    private $selectedStartDateString;
+    private $selectedEndDateString;
+    private $namesOfIncomes = [];
+    private $amountOfIncomes = [];
+    private $namesOfExpenses = [];
+    private $amountOfExpenses = [];
+    private $numberOfIncomes = [];
+    private $numberOfExpenses = [];
+    private $sumOfIncomes = NULL;
+    private $sumOfExpenses = NULL;
+    private $balanceOfIncomes = [];
+    private $balanceOfExpenses = [];
 
     public function newAction(){
         View::renderTemplate('BalanceSheet/new.html');
-        /*
-        if($this->indicateStartDateAndEndDate()){
-            $this->matchIncomeIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
-            $this->matchExpenseIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
-            print_r($this->namesOfIncomes);
-        }
-
-        //echo '<br>the namesOfIncomes table:<br>';
-       //print_r($this->namesOfIncomes);
-    /*
-        echo '<br>the amountOfIncomes table:<br>';
-        print_r($this->amountOfIncomes);
-
-        echo '<br>the namesOfExpenses table:<br>';
-        print_r($this->namesOfExpenses);
-
-        echo '<br>the amountOfExpenses table:<br>';
-        print_r($this->amountOfExpenses);
-        */
-
     }
 
     public function showAction(){
 
         if($this->indicateStartDateAndEndDate()){
+
             $this->matchIncomeIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
+            $this->numberOfIncomes = $this->countNumberOfItems($this->namesOfIncomes);
+            $this->sumOfIncomes = $this->sumUpCashFlow($this->amountOfIncomes);
+            $this->balanceOfIncomes = $this->makeBalanceSheet($this->numberOfIncomes, $this->namesOfIncomes, $this->amountOfIncomes);
+
             $this->matchExpenseIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
+            $this->numberOfExpenses = $this->countNumberOfItems($this->namesOfExpenses);
+            $this->sumOfExpenses = $this->sumUpCashFlow($this->amountOfExpenses);
+            $this->balanceOfExpenses = $this->makeBalanceSheet($this->numberOfExpenses, $this->namesOfExpenses, $this->amountOfExpenses);
 
             View::renderTemplate('BalanceSheet/show.html', [
-                'namesOfIncomes' => $this->namesOfIncomes,
-                'amountOfIncomes' => $this->amountOfIncomes,
-                'namesOfExpenses' => $this->namesOfExpenses,
-                'amountOfExpenses' => $this->amountOfExpenses
+                'sumOfIncomes' => $this->sumOfIncomes,
+                'balanceOfIncomes' => $this->balanceOfIncomes,
+                'sumOfExpenses' => $this->sumOfExpenses,
+                'balanceOfExpenses' => $this->balanceOfExpenses
             ]);
 
         }
@@ -126,7 +120,7 @@ class BalanceSheet extends Authenticated{
         if($this->selectedStartDateString < $this->selectedEndDateString){
             return true;
         } else {
-            Flash::addMessages('Sorry, start-date cannot be later than end-date. Try again.', 'warning');
+            Flash::addMessages('Start date cannot be later than End date. Try again.', 'warning');
             $this->redirect('/BalanceSheet/new');
         }
     }
@@ -166,8 +160,41 @@ class BalanceSheet extends Authenticated{
             }
         }
     }
+
+    protected function countNumberOfItems($nameOfIncomes){
+        $i = NULL;
+        $numberOfItems = [];
+
+        for($i = 0; $i<count($nameOfIncomes); $i++){
+            $numberOfItems[$i] = $i+1;
+        }
+
+        return  $numberOfItems;
+    }
     
+    protected function sumUpCashFlow($amountOfIncomes){
+        $cashFlow = [];
+        $cashFlow = array_sum($amountOfIncomes);
+        return $cashFlow;
+    }
+
+    protected function makeBalanceSheet($number, $names, $amounts){
     
+        $balance = [];
+        $x = 0;
+        $y = 0;
+
+        while($y < count($number)){
+      
+             $balance[$x] = $number[$y];
+             $balance[$x+1] = $names[$y];
+             $balance[$x+2] = $amounts[$y];
+             $y++;
+             $x = $x + 3;
+        }          
+
+        return  $balance;
+    }
 }
 
 ?>

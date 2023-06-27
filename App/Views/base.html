@@ -80,9 +80,15 @@
         
     <div class="container"> 
         {% for message in flash_messages %}
-            <div class="alert alert-{{ message.type }}">
-                {{ message.body }}
+        <div class="row">
+            <div class="col"></div>
+            <div class="col m-3">
+                <div class="alert alert-{{ message.type }} text-center">
+                    {{ message.body }}
+                </div>
             </div>
+            <div class="col"></div>
+        </div>
         {% endfor %}
 
         {% block body %}        
