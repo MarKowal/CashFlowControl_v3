@@ -7,15 +7,19 @@ use App\Models\Earning;
 use App\Models\Expenditure;
 use DateTime; //używam wbudowanej w PHP klasy DateTime()
 use App\Flash;
+use App\Controllers\TimeAndDate;
 
 
 class BalanceSheet extends Authenticated{
     
-    private $timePeriod;
-    private $selectedStartDate;
-    private $selectedEndDate;
-    private $selectedStartDateString;
-    private $selectedEndDateString;
+
+    private $dateStart;
+    private $dateEnd;
+    //private $timePeriod;
+   // private $selectedStartDate;
+   // private $selectedEndDate;
+   // private $selectedStartDateString;
+   // private $selectedEndDateString;
     private $namesOfIncomes = [];
     private $amountOfIncomes = [];
     private $namesOfExpenses = [];
@@ -34,8 +38,25 @@ class BalanceSheet extends Authenticated{
         View::renderTemplate('BalanceSheet/new.html');
     }
 
-    public function showAction(){
+    public function indicateStartAndEndDates(){
 
+        $date = new TimeAndDate();
+
+        if(isset($_POST['dateStartFromUser'])){
+            if ($date->validateDatesFromUser()){
+                $this->dateStart = $_POST['dateStartFromUser'];
+                $this->dateEnd = $_POST['dateEndFromUser'];
+            }
+        } else {
+            $this->dateStart = $date->indicateStartDate();
+            $this->dateEnd = $date->indicateEndDate();
+        }
+      
+        echo $this->dateStart."<br>";
+        echo $this->dateEnd;
+    }
+
+        /*
         if($this->indicateStartDateAndEndDate()){
 
             $this->matchIncomeIdWithCategoryName($this->selectedStartDateString, $this->selectedEndDateString);
@@ -59,8 +80,10 @@ class BalanceSheet extends Authenticated{
                 'balanceMessage' => $this->balanceMessage
             ]);
         }
-    }
+        */
+    
 
+    /*
     protected function indicateStartDateAndEndDate(){
 
         $this->timePeriod = $_POST['timePeriod'] ?? NULL;
@@ -129,7 +152,7 @@ class BalanceSheet extends Authenticated{
             Flash::addMessages('Start date cannot be later than End date. Try again.', 'warning');
             $this->redirect('/BalanceSheet/new');
         }
-    }
+    }*/
 
     protected function matchIncomeIdWithCategoryName($dateStart, $dateEnd){
 

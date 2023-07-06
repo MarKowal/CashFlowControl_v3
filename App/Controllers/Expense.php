@@ -6,6 +6,8 @@ use \Core\View;
 use App\Controllers\Authenticated;
 use App\Models\Expenditure;
 use App\Flash;
+use App\TimeAndDate;
+
 
 class Expense extends Authenticated{
 
@@ -19,14 +21,14 @@ class Expense extends Authenticated{
 
         View::renderTemplate('Expense/new.html', [
             'categories' => $this->expenseCategories,
-            'presentDate' => $this->getPresentDate(),
+            'presentDate' => TimeAndDate::getPresentDate(),
             'payments' => $this->paymentCategories
         ]);
     }
-
+    /*
     protected function getPresentDate(){
         return date("Y-m-d"); 
-    }
+    }*/
 
     public function createAction(){
 

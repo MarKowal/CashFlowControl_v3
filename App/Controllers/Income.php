@@ -6,6 +6,8 @@ use \Core\View;
 use App\Controllers\Authenticated;
 use App\Models\Earning;
 use App\Flash;
+use App\TimeAndDate;
+
 
 class Income extends Authenticated{
     
@@ -17,7 +19,7 @@ class Income extends Authenticated{
         $this->incomeCategories = Earning::getDefaultIncomeCategories();
         View::renderTemplate('Income/new.html', [
             'categories' => $this->incomeCategories,
-            'presentDate' => $this->getPresentDate()
+            'presentDate' => TimeAndDate::getPresentDate()
         ]);
     }
 
@@ -48,10 +50,11 @@ class Income extends Authenticated{
     public function successAction(){
         View::renderTemplate('income/success.html');
     }
-
+    /*
     protected function getPresentDate(){
         return date("Y-m-d"); 
     }
+    */
 
 }
 
