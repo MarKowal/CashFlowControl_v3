@@ -5,7 +5,7 @@ namespace App\Controllers;
 use \Core\View;
 use App\Models\Earning;
 use App\Models\Expenditure;
-use DateTime; //używam wbudowanej w PHP klasy DateTime()
+use DateTime; 
 use App\Flash;
 use App\Controllers\TimeAndDate;
 
@@ -38,7 +38,44 @@ class BalanceSheet extends Authenticated{
         View::renderTemplate('BalanceSheet/new.html');
     }
 
-    public function indicateStartAndEndDates(){
+    public function showAction(){
+
+        $this->indicateStartAndEndDates();
+
+     //   echo $this->dateStart."<br>";
+      //  echo $this->dateEnd;
+
+
+
+
+
+        $this->matchIncomeIdWithCategoryName($this->dateStart, $this->dateEnd);
+        $this->numberOfIncomes = $this->countNumberOfItems($this->namesOfIncomes);
+        $this->sumOfIncomes = $this->sumUpCashFlow($this->amountOfIncomes);
+        $this->balanceOfIncomes = $this->makeBalanceSheet($this->numberOfIncomes, $this->namesOfIncomes, $this->amountOfIncomes);
+
+        $this->matchExpenseIdWithCategoryName($this->dateStart, $this->dateEnd);
+        $this->numberOfExpenses = $this->countNumberOfItems($this->namesOfExpenses);
+        $this->sumOfExpenses = $this->sumUpCashFlow($this->amountOfExpenses);
+        $this->balanceOfExpenses = $this->makeBalanceSheet($this->numberOfExpenses, $this->namesOfExpenses, $this->amountOfExpenses);
+
+        $this->makeMessageAfterBalance();
+
+        View::renderTemplate('BalanceSheet/show.html', [
+            'sumOfIncomes' => $this->sumOfIncomes,
+            'balanceOfIncomes' => $this->balanceOfIncomes,
+            'sumOfExpenses' => $this->sumOfExpenses,
+            'balanceOfExpenses' => $this->balanceOfExpenses,
+            'flagForBalanceMessage' => $this->flagForBalanceMessage,
+            'balanceMessage' => $this->balanceMessage
+        ]);
+
+
+
+
+    }
+
+    private function indicateStartAndEndDates(){
 
         $date = new TimeAndDate();
 
@@ -51,10 +88,8 @@ class BalanceSheet extends Authenticated{
             $this->dateStart = $date->indicateStartDate();
             $this->dateEnd = $date->indicateEndDate();
         }
-      
-        echo $this->dateStart."<br>";
-        echo $this->dateEnd;
     }
+
 
         /*
         if($this->indicateStartDateAndEndDate()){
