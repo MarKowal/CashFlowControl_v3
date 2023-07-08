@@ -6,7 +6,7 @@ use \Core\View;
 use App\Controllers\Authenticated;
 use App\Models\Earning;
 use App\Flash;
-use App\TimeAndDate;
+use App\Controllers\TimeAndDate;
 
 
 class Income extends Authenticated{
@@ -41,7 +41,7 @@ class Income extends Authenticated{
             Flash::addMessages('Sorry, try again.', 'info');
             View::renderTemplate('Income/new.html', [
                 'categories' => $this->incomeCategories,
-                'presentDate' => $this->getPresentDate()
+                'presentDate' => TimeAndDate::getPresentDate()
             ]);
         }
 
