@@ -25,10 +25,6 @@ class Expense extends Authenticated{
             'payments' => $this->paymentCategories
         ]);
     }
-    /*
-    protected function getPresentDate(){
-        return date("Y-m-d"); 
-    }*/
 
     public function createAction(){
 

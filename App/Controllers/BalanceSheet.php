@@ -8,6 +8,7 @@ use App\Models\Expenditure;
 use DateTime; 
 use App\Flash;
 use App\Controllers\TimeAndDate;
+use App\Controllers\Income;
 
 
 class BalanceSheet extends Authenticated{
@@ -21,17 +22,19 @@ class BalanceSheet extends Authenticated{
    // private $selectedStartDateString;
    // private $selectedEndDateString;
     private $namesOfIncomes = [];
-    private $amountOfIncomes = [];
+    private $amountOfIncomes;
     private $namesOfExpenses = [];
     private $amountOfExpenses = [];
     private $numberOfIncomes = [];
     private $numberOfExpenses = [];
-    private $sumOfIncomes = NULL;
-    private $sumOfExpenses = NULL;
-    private $balanceOfIncomes = [];
-    private $balanceOfExpenses = [];
-    private $flagForBalanceMessage = NULL;
-    private $balanceMessage = NULL;
+
+
+    private $sumOfIncomes;
+    private $sumOfExpenses;
+    private $balanceOfIncomes;
+    private $balanceOfExpenses;
+    private $flagForBalanceMessage;
+    private $balanceMessage;
 
 
     public function newAction(){
@@ -45,10 +48,8 @@ class BalanceSheet extends Authenticated{
      //   echo $this->dateStart."<br>";
       //  echo $this->dateEnd;
 
-
-
-
-
+       
+        /*
         $this->matchIncomeIdWithCategoryName($this->dateStart, $this->dateEnd);
         $this->numberOfIncomes = $this->countNumberOfItems($this->namesOfIncomes);
         $this->sumOfIncomes = $this->sumUpCashFlow($this->amountOfIncomes);
@@ -70,7 +71,7 @@ class BalanceSheet extends Authenticated{
             'balanceMessage' => $this->balanceMessage
         ]);
 
-
+        */
 
 
     }
@@ -225,20 +226,20 @@ class BalanceSheet extends Authenticated{
         }
     }
 
-    protected function countNumberOfItems($nameOfIncomes){
+    protected function countNumberOfItems($names){
         $i = NULL;
         $numberOfItems = [];
 
-        for($i = 0; $i<count($nameOfIncomes); $i++){
+        for($i = 0; $i<count($names); $i++){
             $numberOfItems[$i] = $i+1;
         }
 
         return  $numberOfItems;
     }
     
-    protected function sumUpCashFlow($amountOfIncomes){
+    protected function sumUpCashFlow($amounts){
         $cashFlow = [];
-        $cashFlow = array_sum($amountOfIncomes);
+        $cashFlow = array_sum($amounts);
         return $cashFlow;
     }
 
@@ -260,7 +261,7 @@ class BalanceSheet extends Authenticated{
         return  $balance;
     }
 
-    protected function makeMessageAfterBalance(){
+    private function makeMessageAfterBalance(){
 
         if ($this->sumOfIncomes > $this->sumOfExpenses){
             $this->flagForBalanceMessage = '1';
