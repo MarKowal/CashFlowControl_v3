@@ -152,7 +152,7 @@ class Earning extends \Core\Model{
 
     public function getIncomeCategoryNames(){
 
-        $sql = 'SELECT * FROM incomes_category_assigned_to_users WHERE user_id = :id';
+        $sql = 'SELECT id, name FROM incomes_category_assigned_to_users WHERE user_id = :id';
         $db = static::getDB();
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);

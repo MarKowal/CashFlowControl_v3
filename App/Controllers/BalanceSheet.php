@@ -8,7 +8,6 @@ use App\Models\Expenditure;
 use DateTime; 
 use App\Flash;
 use App\Controllers\TimeAndDate;
-use App\Controllers\Income;
 
 
 class BalanceSheet extends Authenticated{
@@ -21,12 +20,12 @@ class BalanceSheet extends Authenticated{
    // private $selectedEndDate;
    // private $selectedStartDateString;
    // private $selectedEndDateString;
-    private $namesOfIncomes = [];
-    private $amountOfIncomes;
-    private $namesOfExpenses = [];
-    private $amountOfExpenses = [];
-    private $numberOfIncomes = [];
-    private $numberOfExpenses = [];
+  //  private $namesOfIncomes = [];
+  //  private $amountOfIncomes;
+  //  private $namesOfExpenses = [];
+  //  private $amountOfExpenses = [];
+  //  private $numberOfIncomes = [];
+ //   private $numberOfExpenses = [];
 
 
     private $sumOfIncomes;
@@ -45,21 +44,13 @@ class BalanceSheet extends Authenticated{
 
         $this->indicateStartAndEndDates();
 
-     //   echo $this->dateStart."<br>";
-      //  echo $this->dateEnd;
+        $incomes = new IncomesForBalanceSheet($this->dateStart, $this->dateEnd);
+        $this->balanceOfIncomes = $incomes->matchIncomeIdWithCategoryNameId($this->dateStart, $this->dateEnd);
+        $this->sumOfIncomes = $incomes->sumUpIncomes();
 
-       
-        /*
-        $this->matchIncomeIdWithCategoryName($this->dateStart, $this->dateEnd);
-        $this->numberOfIncomes = $this->countNumberOfItems($this->namesOfIncomes);
-        $this->sumOfIncomes = $this->sumUpCashFlow($this->amountOfIncomes);
-        $this->balanceOfIncomes = $this->makeBalanceSheet($this->numberOfIncomes, $this->namesOfIncomes, $this->amountOfIncomes);
 
-        $this->matchExpenseIdWithCategoryName($this->dateStart, $this->dateEnd);
-        $this->numberOfExpenses = $this->countNumberOfItems($this->namesOfExpenses);
-        $this->sumOfExpenses = $this->sumUpCashFlow($this->amountOfExpenses);
-        $this->balanceOfExpenses = $this->makeBalanceSheet($this->numberOfExpenses, $this->namesOfExpenses, $this->amountOfExpenses);
 
+        
         $this->makeMessageAfterBalance();
 
         View::renderTemplate('BalanceSheet/show.html', [
@@ -71,8 +62,7 @@ class BalanceSheet extends Authenticated{
             'balanceMessage' => $this->balanceMessage
         ]);
 
-        */
-
+        
 
     }
 
@@ -189,7 +179,7 @@ class BalanceSheet extends Authenticated{
             $this->redirect('/BalanceSheet/new');
         }
     }*/
-
+/*
     protected function matchIncomeIdWithCategoryName($dateStart, $dateEnd){
 
         $incomes = new Earning();
@@ -260,7 +250,7 @@ class BalanceSheet extends Authenticated{
 
         return  $balance;
     }
-
+*/
     private function makeMessageAfterBalance(){
 
         if ($this->sumOfIncomes > $this->sumOfExpenses){
