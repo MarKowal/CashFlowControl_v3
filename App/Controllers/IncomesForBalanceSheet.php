@@ -10,7 +10,6 @@ class IncomesForBalanceSheet extends Authenticated{
     private $dateStart;
     private $dateEnd;
     private $incomesBalanceSheet;
-    public $sumOfIncome;
 
     public function __construct($dateStart, $dateEnd){
         $this->dateStart = $dateStart;
@@ -30,9 +29,6 @@ class IncomesForBalanceSheet extends Authenticated{
         $allIncomeCategoryNames = $incomes->getIncomeCategoryNames();
         return $allIncomeCategoryNames;
     }
-
-
-
 
     private function getNamesOfIncomes(){
 
@@ -82,20 +78,6 @@ class IncomesForBalanceSheet extends Authenticated{
         return  $numberOfItems;
     }
 
-    public function matchIncomeIdWithCategoryNameId(){
-        $names;
-        $numbers;
-        $amounts;
-
-        $names = $this->getNamesOfIncomes();
-        $amounts = $this->getAmountOfIncomes();
-        $numbers = $this->countNumberOfItems($names);
-
-        $this->incomesBalanceSheet = $this->createIncomesTable($numbers, $names, $amounts);
-
-        return  $this->incomesBalanceSheet;
-    }
-
     private function createIncomesTable($numbers, $names, $amounts){
 
         $balance = [];
@@ -112,6 +94,20 @@ class IncomesForBalanceSheet extends Authenticated{
         }          
 
         return  $balance;
+    }
+
+    public function makeIncomesBalanceSheet(){
+        $names;
+        $numbers;
+        $amounts;
+
+        $names = $this->getNamesOfIncomes();
+        $amounts = $this->getAmountOfIncomes();
+        $numbers = $this->countNumberOfItems($names);
+
+        $this->incomesBalanceSheet = $this->createIncomesTable($numbers, $names, $amounts);
+
+        return  $this->incomesBalanceSheet;
     }
 
     public function sumUpIncomes(){
