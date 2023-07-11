@@ -26,12 +26,12 @@ class Earning extends \Core\Model{
 
     public static function getDefaultIncomeCategories(){
 
-        $sql = 'SELECT * FROM incomes_category_default';
+        $sql = 'SELECT name_income FROM incomes_category_default ORDER BY name_income ASC';
         $db = static::getDB();
         $stmt = $db->prepare($sql);
         $stmt->execute();
-        
-        return $stmt->fetchAll(PDO::FETCH_COLUMN, 1);
+  
+        return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public function saveToAssignedCategories($categories){
@@ -51,26 +51,22 @@ class Earning extends \Core\Model{
 
     public static function checkIfUserHasDefaultCategories(){
 
-        $sql = 'SELECT * FROM incomes_category_assigned_to_users WHERE user_id = :id';
+        $sql = 'SELECT name FROM incomes_category_assigned_to_users WHERE user_id = :id';
         $db = static::getDB();
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':id', $_SESSION['user_id'], PDO::PARAM_INT);
-        
-        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
         $stmt->execute();
 
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_COLUMN, 1);
     }
 
-    protected function getIncomeCategoryIdAssignedToUser(){
+    private function getIncomeCategoryIdAssignedToUser(){
 
-        $sql = 'SELECT * FROM incomes_category_assigned_to_users WHERE user_id = :id AND name = :incomeCategory';
+        $sql = 'SELECT id FROM incomes_category_assigned_to_users WHERE user_id = :id AND name = :incomeCategory';
         $db = static::getDB();
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
         $stmt->bindValue(':incomeCategory', $this->incomeCategory, PDO::PARAM_STR);
-
-        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_COLUMN, 0);
@@ -127,27 +123,22 @@ class Earning extends \Core\Model{
 
     public function getIncomesResult($startDate, $endDate){
 
-        //echo 'start date from Earning model = '.$startDate.'<br>';
-        //echo 'end date from Earning model = '.$endDate.'<br>';
         $user_id = $_SESSION['user_id'];
 
         $sql = "SELECT incomes.inc_cat_assigned_user_id, SUM(incomes.amount) 
-        AS amountOfIncomesByCategoryAndPeriodOfTime FROM incomes, incomes_category_assigned_to_users 
-        WHERE incomes.user_id = :user_id AND incomes.date_of_income BETWEEN :startDate AND :endDate 
-        AND incomes.inc_cat_assigned_user_id = incomes_category_assigned_to_users.id 
-        GROUP BY incomes.inc_cat_assigned_user_id ORDER BY amountOfIncomesByCategoryAndPeriodOfTime DESC"; 
+                AS amountOfIncomesByCategoryAndPeriodOfTime FROM incomes, incomes_category_assigned_to_users 
+                WHERE incomes.user_id = :user_id AND incomes.date_of_income BETWEEN :startDate AND :endDate 
+                AND incomes.inc_cat_assigned_user_id = incomes_category_assigned_to_users.id 
+                GROUP BY incomes.inc_cat_assigned_user_id ORDER BY amountOfIncomesByCategoryAndPeriodOfTime DESC"; 
 
         $db = static::getDB();
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
         $stmt->bindParam(':endDate', $endDate, PDO::PARAM_STR);
-
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-
         $stmt->execute();
 
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getIncomeCategoryNames(){
@@ -156,11 +147,9 @@ class Earning extends \Core\Model{
         $db = static::getDB();
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
-
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
 
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
