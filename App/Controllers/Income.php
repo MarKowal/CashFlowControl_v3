@@ -35,7 +35,7 @@ class Income extends Authenticated{
 
         if($income->saveToIncomes() === true){
             Flash::addMessages('Superb!', 'success');
-            $this->redirect('/income/success');
+            $this->redirect('/Income/success');
         } else {
             $errorMessage = implode(" ", $income->saveToIncomes());
             Flash::addMessages($errorMessage, 'warning');
@@ -47,7 +47,7 @@ class Income extends Authenticated{
     }
 
     public function successAction(){
-        View::renderTemplate('income/success.html');
+        View::renderTemplate('Income/success.html');
     }
 
 }

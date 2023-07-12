@@ -30,7 +30,7 @@ class Profile extends Authenticated{
     public function updateAction(){
         if($this->user->updateProfile($_POST)){
             Flash::addMessages('Changes saved');
-            $this->redirect('/profile/show');
+            $this->redirect('/Profile/show');
             
         } else {
             View::renderTemplate('Profile/edit.html', [

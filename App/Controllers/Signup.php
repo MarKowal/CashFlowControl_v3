@@ -16,7 +16,7 @@ class Signup extends \Core\Controller{
         if ($user->save()){
             $user->sendActivationEmail();
 
-            $this->redirect('/signup/success');
+            $this->redirect('/Signup/success');
         } else {
             View::renderTemplate('Signup/new.html', [
                 'user' => $user
@@ -30,7 +30,7 @@ class Signup extends \Core\Controller{
 
     public function activateAction(){
         User::activate($this->route_params['token']);
-        $this->redirect('/signup/activated');
+        $this->redirect('/Signup/activated');
     }
 
     public function activatedAction(){

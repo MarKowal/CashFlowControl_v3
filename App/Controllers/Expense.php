@@ -34,7 +34,7 @@ class Expense extends Authenticated{
 
         if($expense->saveToExpenses() === true){
             Flash::addMessages('Superb!', 'success');
-            $this->redirect('/expense/success');
+            $this->redirect('/Expense/success');
         } else {
             $errorMessage = implode(" ", $expense->saveToExpenses());
             Flash::addMessages($errorMessage, 'warning');
@@ -60,7 +60,7 @@ class Expense extends Authenticated{
     }
     
     public function successAction(){
-        View::renderTemplate('expense/success.html');
+        View::renderTemplate('Expense/success.html');
     }
 }
 
