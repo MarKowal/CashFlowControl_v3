@@ -28,7 +28,7 @@
                 <p class="text-start">Means of payment:</p>
                 {% for payment in payments %}
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="paymentCategory" id="{{ payment }}" value="{{ payment }}" class="form-control">
+                        <input class="form-check-input" type="radio" name="paymentCategory" id="{{ payment }}" value="{{ payment }}" class="form-control" required>
                         <label class="form-check-label" for="{{ payment }}">
                             {{ payment }}
                         </label>
@@ -38,7 +38,7 @@
                 <p class="text-start">Category of expense:</p>
                 {% for category in categories %}
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="expenseCategory" id="{{ category }}" value="{{ category }}" class="form-control">
+                        <input class="form-check-input" type="radio" name="expenseCategory" id="{{ category }}" value="{{ category }}" class="form-control" required>
                         <label class="form-check-label" for="{{ category }}">
                             {{ category }}
                         </label>

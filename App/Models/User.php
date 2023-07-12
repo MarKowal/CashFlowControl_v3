@@ -9,9 +9,6 @@ use Core\View;
 
 class User extends \Core\Model{
 
-    //Uncaught exception: 'ErrorException'
-    //Message: 'Creation of dynamic property App\Models\User::$expiry_timestamp is deprecated'
-
     public $id;
     public $name;
     public $email;
@@ -26,13 +23,9 @@ class User extends \Core\Model{
     public $password_reset_token;
     public $activation_token;
 
-
-
     public $errors = []; 
 
     public function __construct($data = []){
-        // $data to wartości z tablicy $_POST
-        // wartości tablicy trzeba zamienić na atrybuty obiektu $user
          foreach($data as $key => $value){
             $this->$key = $value;
          };
@@ -43,7 +36,6 @@ class User extends \Core\Model{
         $this->validate();
 
         if (empty($this->errors)){
-            //hashowanie hasła przed zapisem do bazy danych:
             $password_hash = password_hash($this->password, PASSWORD_DEFAULT);
 
             $token = new Token();
@@ -82,9 +74,6 @@ class User extends \Core\Model{
             $this->errors[] = 'Email already exists in the data base.';
         }
 
-        /*if ($this->password != $this->password_confirm){
-            $this->errors[] = 'Password must match confirmation.';
-        }*/
         if(isset($this->password)){
             if (strlen($this->password) < 6){
                 $this->errors[] = 'Password must have at least 6 characters.';
@@ -100,20 +89,7 @@ class User extends \Core\Model{
         }
     }
 
-    //dla walidacji w Account w AJAX trzeba było ustawić public static:
-    //protected function emailExists($email){
     public static function emailExists($email, $ignore_id = null){
-        /*$sql = 'SELECT * FROM users WHERE email = :email';
-
-        $db = static::getDB();
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-
-        $stmt->execute();
-
-        return $stmt->fetch() !== false;*/
-
-        //return static::findByEmail($email) !== false;
 
         $user = static::findByEmail($email);
 
@@ -134,11 +110,6 @@ class User extends \Core\Model{
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         
-        //standardowo fetch zwraca tablicę
-        //teraz chcę żeby zwróciło obiekt:
-        //$stmt->setFetchMode(PDO::FETCH_CLASS, 'App\Models\User');
-
-        //zamiast hard-coded App\Models\User używam funkcji:
         $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
 
         $stmt->execute();
@@ -148,10 +119,7 @@ class User extends \Core\Model{
 
     public static function authenticate($email, $password){
 
-        //czy user z takim emailem istnieje?
         $user = static::findByEmail($email);
-        //jeżeli tak to
-        //czy user z takim hasłem istnieje?
         if($user && $user->is_active){
             if (password_verify($password, $user->password_hash)){
                 return $user;
@@ -175,14 +143,10 @@ class User extends \Core\Model{
     }
 
     public function rememberLogin(){
-        //tworzę nowy token ktory będzie w cookie
         $token = new Token();
-        //hashuję token przed zapisaniem w DB
         $hashed_token = $token->getHash();
 
-        //zapisuję w zmiennej czysty token, pójdzie do cookie
         $this->remember_token = $token->getValue();
-        //ustawiam czas wygaśnięcia cookie np. 2 dni
         $this->expiry_timestamp = time() + 60 * 60 * 24 * 30;
 
         $sql = 'INSERT INTO remembered_logins (token_hash, user_id, expires_at) 
@@ -203,7 +167,6 @@ class User extends \Core\Model{
         $user = static::findByEmail($email);
 
         if($user){
-            //generuję token i zapisuję do DB
             if($user->startPasswordReset()){
                 $user->sendPasswordResetEmail();
             }
@@ -212,14 +175,11 @@ class User extends \Core\Model{
 
     protected function startPasswordReset(){
         
-        //do resetu hasła generuję nowy token
         $token = new Token();
         $hashed_token = $token->getHash();
         
-        //token będzie potrzebny do URL z resetem hasła 
         $this->password_reset_token = $token->getValue();
 
-        //czas trwania linku
         $expiry_timestamp = time() + 60*60*2; //2 godziny
 
         $sql = 'UPDATE users SET
@@ -240,22 +200,15 @@ class User extends \Core\Model{
 
     protected function sendPasswordResetEmail(){
 
-        //tworzę URL z tokenem
         $url = 'http://'.$_SERVER['HTTP_HOST'].'/password/reset/'.$this->password_reset_token;
-
-        //$text = "Please click on the following URL to reset your password: $url";
-        //$html = "Please click on the following URL to reset your password: <a href=\"$url\">LINK</a>";
        
         $text = View::getTemplate('Password/reset_email.txt', ['url' => $url]);
         $html = View::getTemplate('Password/reset_email.html', ['url' => $url]);
 
-        //wysyłam maila:
-        //adres email został wczesniej pobrany z DB
         Mail::send($this->email, 'Password reset', $text, $html);
     }
 
     public static function findByPasswordReset($token){
-        //robię hash z przesłanego tokena:
         $token = new Token($token);
         $hashed_token = $token->getHash();
 
@@ -273,7 +226,6 @@ class User extends \Core\Model{
         $user = $stmt->fetch();
 
         if($user){
-            //spr czy token sie nie przedawnił:
             if(strtotime($user->password_reset_expiry) > time()){
                 return $user;
             }            
@@ -282,12 +234,10 @@ class User extends \Core\Model{
     }
 
     public function resetPassword($password){
-        //trzeba spr poprawność nowego hasła z resetu:
         $this->password = $password;
 
         $this->validate();
         
-        //jeżeli walidacja dobrze poszła: 
         if(empty($this->errors)){
             $password_hash = password_hash($this->password, PASSWORD_DEFAULT);
 
@@ -312,22 +262,15 @@ class User extends \Core\Model{
 
     public function sendActivationEmail(){
 
-        //tworzę URL z tokenem
         $url = 'http://'.$_SERVER['HTTP_HOST'].'/signup/activate/'.$this->activation_token;
 
-        //$text = "Please click on the following URL to reset your password: $url";
-        //$html = "Please click on the following URL to reset your password: <a href=\"$url\">LINK</a>";
-       
         $text = View::getTemplate('Signup/activation_email.txt', ['url' => $url]);
         $html = View::getTemplate('Signup/activation_email.html', ['url' => $url]);
 
-        //wysyłam maila:
-        //adres email został wczesniej pobrany z DB
         Mail::send($this->email, 'Account activation', $text, $html);
     }
 
     public static function activate($value){
-        //najpierw trzeba przerobić token na hash:
         $token = new Token($value);
         $hashed_token = $token->getHash();
 
@@ -347,7 +290,6 @@ class User extends \Core\Model{
     public function updateProfile($data){
         $this->name = $data['name'];
         $this->email = $data['email'];
-        //jeżeli w ogóle zmieniam hasło:
         if($data['password'] != ''){
             $this->password = $data['password'];
         }
@@ -358,7 +300,6 @@ class User extends \Core\Model{
             $sql = 'UPDATE users SET
                 name = :name,
                 email = :email';
-                //kombinowanie bo password jest opcjonalne:
                 if(isset($this->password)){
                     $sql .= ', password_hash = :password_hash';
                 }  

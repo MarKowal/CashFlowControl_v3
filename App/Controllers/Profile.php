@@ -6,8 +6,6 @@ use \Core\View;
 use \App\Auth;
 use \App\Flash;
 
-//class Profile extends \Core\Controller{
-//żeby user był już zalogowany to trzeba dziedziczyć po Athenticated
 class Profile extends Authenticated{
 
     public $user;
@@ -19,8 +17,6 @@ class Profile extends Authenticated{
 
     public function showAction(){
         View::renderTemplate('Profile/show.html', [
-            //pobieram dane usera z Auth i przekazuję do view:
-            //'user' => Auth::getUser()
             'user' => $this->user
         ]);
     }
@@ -32,9 +28,6 @@ class Profile extends Authenticated{
     }
 
     public function updateAction(){
-        //stawiam obiekt User żeby wykonywać jego metody
-        //$user = Auth::getUser();
-
         if($this->user->updateProfile($_POST)){
             Flash::addMessages('Changes saved');
             $this->redirect('/profile/show');

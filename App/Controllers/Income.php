@@ -28,21 +28,22 @@ class Income extends Authenticated{
      
         $this->incomeCategories = Earning::getDefaultIncomeCategories();
 
+
         if(! Earning::checkIfUserHasDefaultCategories()){
             $income->saveToAssignedCategories($this->incomeCategories);
         } 
 
-        if($income->saveToIncomes()){
+        if($income->saveToIncomes() === true){
             Flash::addMessages('Superb!', 'success');
             $this->redirect('/income/success');
         } else {
-            Flash::addMessages('Sorry, try again.', 'info');
+            $errorMessage = implode(" ", $income->saveToIncomes());
+            Flash::addMessages($errorMessage, 'warning');
             View::renderTemplate('Income/new.html', [
                 'categories' => $this->incomeCategories,
                 'presentDate' => TimeAndDate::getPresentDate()
             ]);
         }
-
     }
 
     public function successAction(){

@@ -15,8 +15,6 @@ class Flash{
             $_SESSION['flash_notifications'] = [];
         }
 
-        //$_SESSION['flash_notifications'][] = $message;
-
         $_SESSION['flash_notifications'][] = [
             'body' => $message,
             'type' => $type
