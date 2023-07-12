@@ -101,13 +101,18 @@ class ExpensesForBalanceSheet extends Authenticated{
         $numbers;
         $amounts;
 
-        $names = $this->getNamesOfExpenses();
-        $amounts = $this->getAmountOfExpenses();
-        $numbers = $this->countNumberOfItems($names);
+        if(! empty($this->makeSumOfEachExpense)){
+            
+            $names = $this->getNamesOfExpenses();
+            $amounts = $this->getAmountOfExpenses();
+            $numbers = $this->countNumberOfItems($names);
+            $this->expenseBalanceSheet = $this->createExpensesTable($numbers, $names, $amounts);
+            return  $this->expenseBalanceSheet;
 
-        $this->expenseBalanceSheet = $this->createExpensesTable($numbers, $names, $amounts);
-
-        return  $this->expenseBalanceSheet;
+        } else {
+            return false;
+        }
+       
     }
 
     public function sumUpExpenses(){

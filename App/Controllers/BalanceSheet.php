@@ -35,8 +35,15 @@ class BalanceSheet extends Authenticated{
         $this->sumOfIncomes = $incomes->sumUpIncomes();
 
         $expenses = new ExpensesForBalanceSheet($this->dateStart, $this->dateEnd);
-        $this->balanceOfExpenses = $expenses->makeExpensesBalanceSheet();
-        $this->sumOfExpenses = $expenses->sumUpExpenses();
+        if($expenses->makeExpensesBalanceSheet()){
+            $this->balanceOfExpenses = $expenses->makeExpensesBalanceSheet();
+            $this->sumOfExpenses = $expenses->sumUpExpenses();
+        } else {
+            $this->balanceOfExpenses = ["-","none","-"];
+            $this->sumOfExpenses = 0;
+        }
+
+   
         
         $this->makeMessageAfterBalance();
 
