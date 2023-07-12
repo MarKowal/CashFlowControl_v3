@@ -7,15 +7,13 @@ use PDO;
 class Earning extends \Core\Model{
 
     
-    public $amount;
-    public $date;
-    public $incomeCategory;
-    public $incomeComment;
-    public $id;
-    public $user_id;
-    public $name;
-
-
+    private $amount;
+    private $date;
+    private $incomeCategory;
+    private $incomeComment;
+    private $id;
+    private $user_id;
+    private $name;
     public $errors = []; 
 
     public function __construct($data = []){
@@ -30,19 +28,18 @@ class Earning extends \Core\Model{
         $db = static::getDB();
         $stmt = $db->prepare($sql);
         $stmt->execute();
-  
+
         return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public function saveToAssignedCategories($categories){
+        
+        $db = static::getDB();
 
-        for($i=0; $i<count($categories); $i++){
+       for($i=0; $i<count($categories); $i++){
             $sql = 'INSERT INTO incomes_category_assigned_to_users (user_id, name) 
                     VALUES (:user_id, :name)';
-            
-            $db = static::getDB();
             $stmt = $db->prepare($sql);
-
             $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
             $stmt->bindValue(':name', $categories[$i], PDO::PARAM_STR);
             $stmt->execute();
@@ -93,21 +90,28 @@ class Earning extends \Core\Model{
 
             return $stmt->execute();
 
+        } else {
+           // echo "<pre>";
+           // var_dump($this->errors);
+          //  exit();
+
+            return $this->errors;
         }
-        return false;
     }
 
-    protected function validate(){
+    private function validate(){
         
-        if ($this->amount == ''){
+        $this->errors = [];
+
+        if (empty($this->amount) || $this->amount == " "){
             $this->errors[] = 'Amount is required.';
         }
 
-        if ($this->date == ''){
+        if (empty($this->date) || $this->date == ''){
             $this->errors[] = 'Date is required.';
         }
 
-        if ($this->incomeCategory == ''){
+        if (empty($this->incomeCategory) || $this->incomeCategory == ''){
             $this->errors[] = 'Income category is required.';
         }
 
