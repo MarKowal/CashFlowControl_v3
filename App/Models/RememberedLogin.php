@@ -13,7 +13,6 @@ class RememberedLogin extends \Core\Model{
 
 
     public static function findByToken($token){
-        //dostaję czysty token z cookie i hashuję go
         $token = new Token($token);
         $token_hash = $token->getHash();
 
@@ -32,17 +31,14 @@ class RememberedLogin extends \Core\Model{
     }
 
     public function getUser(){
-        //user_id w tej klasie mam dzieki fetchowaniu z DB remembered_logins
         return User::findByID($this->user_id);
     }
 
     public function hasExpired(){
-        //sprawdzam czy cookie wygasło
         return strtotime($this->expires_at) < time();
     }
 
     public function delete(){
-        //usuwam zapamiętane cookie z DB:
         $sql = 'DELETE FROM remembered_logins WHERE token_hash = :token_hash';
         
         $db = static::getDB();
