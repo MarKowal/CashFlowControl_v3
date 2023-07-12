@@ -33,36 +33,17 @@ class Income extends Authenticated{
             $income->saveToAssignedCategories($this->incomeCategories);
         } 
 
-
-
-        if($income->saveToIncomes() !== true){
-            $errorMessage = implode(" ", $income->saveToIncomes());
-
-            Flash::addMessages($errorMessage, 'warning');
-            View::renderTemplate('Income/new.html', [
-                'categories' => $this->incomeCategories,
-                'presentDate' => TimeAndDate::getPresentDate()
-            ]);
-        } else {
-            Flash::addMessages('Superb!', 'success');
-            $this->redirect('/income/success');
-        }
-
-        /*
-        if($income->saveToIncomes() == true){
+        if($income->saveToIncomes() === true){
             Flash::addMessages('Superb!', 'success');
             $this->redirect('/income/success');
         } else {
             $errorMessage = implode(" ", $income->saveToIncomes());
-
             Flash::addMessages($errorMessage, 'warning');
             View::renderTemplate('Income/new.html', [
                 'categories' => $this->incomeCategories,
                 'presentDate' => TimeAndDate::getPresentDate()
             ]);
         }
-        */
-
     }
 
     public function successAction(){

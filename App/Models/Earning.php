@@ -14,7 +14,7 @@ class Earning extends \Core\Model{
     private $id;
     private $user_id;
     private $name;
-    public $errors = []; 
+    public $errors; 
 
     public function __construct($data = []){
          foreach($data as $key => $value){
@@ -91,10 +91,6 @@ class Earning extends \Core\Model{
             return $stmt->execute();
 
         } else {
-           // echo "<pre>";
-           // var_dump($this->errors);
-          //  exit();
-
             return $this->errors;
         }
     }

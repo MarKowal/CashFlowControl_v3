@@ -32,11 +32,12 @@ class Expense extends Authenticated{
      
         $this->saveCategoriesAssignedToUser($expense);
 
-        if($expense->saveToExpenses()){
+        if($expense->saveToExpenses() === true){
             Flash::addMessages('Superb!', 'success');
             $this->redirect('/expense/success');
         } else {
-            Flash::addMessages('Sorry, try again.', 'info');
+            $errorMessage = implode(" ", $expense->saveToExpenses());
+            Flash::addMessages($errorMessage, 'warning');
             View::renderTemplate('Expense/new.html', [
                 'categories' => $this->expenseCategories,
                 'presentDate' => TimeAndDate::getPresentDate(),
