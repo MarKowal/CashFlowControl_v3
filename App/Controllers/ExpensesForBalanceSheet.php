@@ -101,7 +101,7 @@ class ExpensesForBalanceSheet extends Authenticated{
         $numbers;
         $amounts;
 
-        if(! empty($this->makeSumOfEachExpense)){
+        if(! empty($this->makeSumOfEachExpense())){
             
             $names = $this->getNamesOfExpenses();
             $amounts = $this->getAmountOfExpenses();
@@ -109,10 +109,8 @@ class ExpensesForBalanceSheet extends Authenticated{
             $this->expenseBalanceSheet = $this->createExpensesTable($numbers, $names, $amounts);
             return  $this->expenseBalanceSheet;
 
-        } else {
-            return false;
         }
-       
+        return false;
     }
 
     public function sumUpExpenses(){

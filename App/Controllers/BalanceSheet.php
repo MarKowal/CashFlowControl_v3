@@ -31,8 +31,13 @@ class BalanceSheet extends Authenticated{
         $this->indicateStartAndEndDates();
 
         $incomes = new IncomesForBalanceSheet($this->dateStart, $this->dateEnd);
-        $this->balanceOfIncomes = $incomes->makeIncomesBalanceSheet();
-        $this->sumOfIncomes = $incomes->sumUpIncomes();
+        if($incomes->makeIncomesBalanceSheet()){
+            $this->balanceOfIncomes = $incomes->makeIncomesBalanceSheet();
+            $this->sumOfIncomes = $incomes->sumUpIncomes();
+        } else {
+            $this->balanceOfIncomes = ["-","none","-"];
+            $this->sumOfIncomes = 0;
+        }
 
         $expenses = new ExpensesForBalanceSheet($this->dateStart, $this->dateEnd);
         if($expenses->makeExpensesBalanceSheet()){
@@ -43,10 +48,7 @@ class BalanceSheet extends Authenticated{
             $this->sumOfExpenses = 0;
         }
 
-   
-        
         $this->makeMessageAfterBalance();
-
         $this->show();
     }
 

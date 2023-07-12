@@ -101,13 +101,17 @@ class IncomesForBalanceSheet extends Authenticated{
         $numbers;
         $amounts;
 
-        $names = $this->getNamesOfIncomes();
-        $amounts = $this->getAmountOfIncomes();
-        $numbers = $this->countNumberOfItems($names);
+        if(! empty($this->makeSumOfEachIncome())){
+            
+            $names = $this->getNamesOfIncomes();
+            $amounts = $this->getAmountOfIncomes();
+            $numbers = $this->countNumberOfItems($names);
+            $this->incomesBalanceSheet = $this->createIncomesTable($numbers, $names, $amounts);
+            return  $this->incomesBalanceSheet;
 
-        $this->incomesBalanceSheet = $this->createIncomesTable($numbers, $names, $amounts);
-
-        return  $this->incomesBalanceSheet;
+        } else {
+            return false;
+        }
     }
 
     public function sumUpIncomes(){
