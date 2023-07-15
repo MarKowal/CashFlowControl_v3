@@ -6,7 +6,7 @@ use \Core\View;
 use App\Controllers\Authenticated;
 use App\Models\Earning;
 use App\Flash;
-use App\Controllers\TimeAndDate;
+use App\TimeAndDate;
 
 
 class Income extends Authenticated{

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Controllers;
+namespace App;
 
 use DateTime; 
 use App\Flash;
 use \Core\View;
 use \Core\Controller;
 
-class TimeAndDate extends Authenticated{
+class TimeAndDate{
 
     private $timePeriod;
 
@@ -26,8 +26,39 @@ class TimeAndDate extends Authenticated{
     public static function getPresentDate(){
         return date("Y-m-d"); 
     }
+
+    public function getStartDate(){
+
+        $dateStart;
+
+        if(isset($_POST['dateStartFromUser'])){
+            if ($this->validateDatesFromUser()){
+                $dateStart = $_POST['dateStartFromUser'];
+            }
+        } else {
+            $dateStart = $this->indicateStartDate();
+        }
+        return $dateStart;
+    }
+
+
+    public function getEndDate(){
+
+        $dateEnd;
+
+        if(isset($_POST['dateEndFromUser'])){
+            if ($this->validateDatesFromUser()){
+                $dateEnd = $_POST['dateEndFromUser'];
+            }
+        } else {
+            $dateEnd = $this->indicateEndDate();
+        }
+        return $dateEnd;
+    }
+
+
     
-    public function indicateStartDate(){
+    private function indicateStartDate(){
               
         $startDate;
 
@@ -39,7 +70,7 @@ class TimeAndDate extends Authenticated{
         }
     }
 
-    public function indicateEndDate(){
+    private function indicateEndDate(){
               
         $endtDate;
 
@@ -117,7 +148,7 @@ class TimeAndDate extends Authenticated{
         ]);
     }
 
-    public function validateDatesFromUser(){
+    private function validateDatesFromUser(){
         if($_POST['dateStartFromUser'] < $_POST['dateEndFromUser']){
             return true;
         } else {
