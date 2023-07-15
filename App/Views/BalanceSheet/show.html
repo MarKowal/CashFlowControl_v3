@@ -69,18 +69,16 @@
     </div>
     <div class="row">
         <div class="col-lg"></div>
-            {% if flagForBalanceMessage is not empty %}
+            {% if goodBalanceMessage == true %}
             <div class="col-lg pt-4">
                 <div class="alert alert-success" role="alert">
-                    <p class="text-center">{{ balanceMessage }}</p>
+                    <p class="text-center mb-0">{{ balanceMessage }}</p>
                 </div>
             </div>
-            {% endif %}
-
-            {% if flagForBalanceMessage is empty %}
+            {% else %}
             <div class="col-lg pt-4">
                 <div class="alert alert-danger" role="alert">
-                    <p class="text-center">{{ balanceMessage }}</p>
+                    <p class="text-center mb-0">{{ balanceMessage }}</p>
                 </div>
             </div>
             {% endif %}

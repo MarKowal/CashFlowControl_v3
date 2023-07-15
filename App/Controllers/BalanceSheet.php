@@ -19,7 +19,7 @@ class BalanceSheet extends Authenticated{
   //  private $balanceOfIncomes;
    // private $sumOfExpenses;
    // private $balanceOfExpenses;
-    private $flagForBalanceMessage;
+    private $goodBalanceMessage;
     private $balanceMessage;
 
 
@@ -60,13 +60,20 @@ class BalanceSheet extends Authenticated{
 
         $incomes = new IncomesForBalanceSheet();
         $expenses = new ExpensesForBalanceSheet();
+
+        if ($incomes->sumUpIncomes() > $expenses->sumUpExpenses()){
+            $this->goodBalanceMessage = true;
+            $this->balanceMessage = 'Very Good! You have savings.';
+        } else {
+            $this->balanceMessage = 'Sorry! Could be better.';
+        } 
         
         View::renderTemplate('BalanceSheet/show.html', [
             'sumOfIncomes' => $incomes->sumUpIncomes(),
             'balanceOfIncomes' => $incomes->makeIncomesBalanceSheet(),
             'sumOfExpenses' => $expenses->sumUpExpenses(),
             'balanceOfExpenses' => $expenses->makeExpensesBalanceSheet(),
-            'flagForBalanceMessage' => $this->flagForBalanceMessage,
+            'goodBalanceMessage' => $this->goodBalanceMessage,
             'balanceMessage' => $this->balanceMessage
         ]);
 
@@ -103,7 +110,7 @@ class BalanceSheet extends Authenticated{
         
     }
     */
-
+/*
     private function makeMessageAfterBalance(){
 
         if ($this->sumOfIncomes > $this->sumOfExpenses){
@@ -113,6 +120,7 @@ class BalanceSheet extends Authenticated{
             $this->balanceMessage = 'Sorry! Could be better.';
         } 
     }
+    */
     
 }
 
