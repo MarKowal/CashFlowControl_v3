@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Earning;
-use App\TimeAndDate;
+use App\Controllers\TimeAndDate;
 
 
 class IncomesForBalanceSheet extends \Core\Model{

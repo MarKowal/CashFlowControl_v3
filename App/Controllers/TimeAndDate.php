@@ -1,13 +1,12 @@
 <?php
 
-namespace App;
+namespace App\Controllers;
 
 use DateTime; 
 use App\Flash;
 use \Core\View;
-use \Core\Controller;
 
-class TimeAndDate{
+class TimeAndDate extends Authenticated{
 
     private $timePeriod;
 

@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Expenditure;
-use App\TimeAndDate;
+use App\Controllers\TimeAndDate;
 
 
 class ExpensesForBalanceSheet extends \Core\Model{
