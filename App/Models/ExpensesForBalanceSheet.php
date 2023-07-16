@@ -54,7 +54,7 @@ class ExpensesForBalanceSheet extends \Core\Model{
 
     private function getAmountOfExpenses(){
        
-        $amountOfExpenses;
+        $amountOfExpenses = [];
 
         $sumOfExpenses = $this->makeSumOfEachExpense();
         $allExpenseCategoryNames = $this->makeAllExpenseCategoryNames();
