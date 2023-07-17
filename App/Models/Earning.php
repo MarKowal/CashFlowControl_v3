@@ -32,21 +32,17 @@ class Earning extends \Core\Model{
         return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
-    public function saveToAssignedCategories($categories){
-        
-        $db = static::getDB();
+    private function saveToAssignedCategories(){
 
-       for($i=0; $i<count($categories); $i++){
-            $sql = 'INSERT INTO incomes_category_assigned_to_users (user_id, name) 
-                    VALUES (:user_id, :name)';
-            $stmt = $db->prepare($sql);
-            $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
-            $stmt->bindValue(':name', $categories[$i], PDO::PARAM_STR);
-            $stmt->execute();
-        }
+        $db = static::getDB();
+        $sql = 'INSERT INTO incomes_category_assigned_to_users (user_id, name) 
+                SELECT :user_id, name_income FROM incomes_category_default ORDER BY name_income ASC';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->execute();
     }
 
-    public static function checkIfUserHasDefaultCategories(){
+    private function checkIfUserHasDefaultCategories(){
 
         $sql = 'SELECT name FROM incomes_category_assigned_to_users WHERE user_id = :id';
         $db = static::getDB();
@@ -54,7 +50,11 @@ class Earning extends \Core\Model{
         $stmt->bindParam(':id', $_SESSION['user_id'], PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_COLUMN, 1);
+        if($stmt->fetch(PDO::FETCH_COLUMN, 1)){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private function getIncomeCategoryIdAssignedToUser(){
@@ -71,6 +71,10 @@ class Earning extends \Core\Model{
 
 
     public function saveToIncomes(){
+
+        if($this->checkIfUserHasDefaultCategories() == false){
+            $this->saveToAssignedCategories();
+        } 
 
         $this->validate();
 
