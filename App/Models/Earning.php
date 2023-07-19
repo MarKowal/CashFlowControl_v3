@@ -52,9 +52,8 @@ class Earning extends \Core\Model{
 
         if($stmt->fetch(PDO::FETCH_COLUMN, 1)){
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     private function getIncomeCategoryIdAssignedToUser(){
