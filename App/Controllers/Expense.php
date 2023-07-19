@@ -11,18 +11,12 @@ use App\Controllers\TimeAndDate;
 
 class Expense extends Authenticated{
 
-    public $expenseCategories = [];
-    public $paymentCategories = [];
-
     public function newAction(){
-      
-        $this->expenseCategories = Expenditure::getDefaultExpenseCategories();
-        $this->paymentCategories = Expenditure::getDefaultPaymentCategories();
 
         View::renderTemplate('Expense/new.html', [
-            'categories' => $this->expenseCategories,
+            'categories' => Expenditure::getDefaultExpenseCategories(),
             'presentDate' => TimeAndDate::getPresentDate(),
-            'payments' => $this->paymentCategories
+            'payments' => Expenditure::getDefaultPaymentCategories()
         ]);
     }
 
@@ -30,35 +24,20 @@ class Expense extends Authenticated{
 
         $expense = new Expenditure($_POST);
      
-        $this->saveCategoriesAssignedToUser($expense);
-
-        if($expense->saveToExpenses() === true){
+        if($expense->saveToExpenses()){
             Flash::addMessages('Superb!', 'success');
             $this->redirect('/Expense/success');
         } else {
             $errorMessage = implode(" ", $expense->saveToExpenses());
             Flash::addMessages($errorMessage, 'warning');
             View::renderTemplate('Expense/new.html', [
-                'categories' => $this->expenseCategories,
+                'categories' => Expenditure::getDefaultExpenseCategories(),
                 'presentDate' => TimeAndDate::getPresentDate(),
-                'payments' => $this->paymentCategories
+                'payments' => Expenditure::getDefaultPaymentCategories()
             ]);
         }
     }
-
-    protected function saveCategoriesAssignedToUser($expense){
-
-        $this->expenseCategories = Expenditure::getDefaultExpenseCategories();
-        $this->paymentCategories = Expenditure::getDefaultPaymentCategories();
-
-        if(! Expenditure::checkIfUserHasDefaultExpenseCategories()){
-            $expense->saveExpensesToAssignedCategories($this->expenseCategories);
-        } 
-        if(! Expenditure::checkIfUserHasDefaultPaymentCategories()){
-            $expense->savePaymentsToAssignedCategories($this->paymentCategories);
-        } 
-    }
-    
+        
     public function successAction(){
         View::renderTemplate('Expense/success.html');
     }

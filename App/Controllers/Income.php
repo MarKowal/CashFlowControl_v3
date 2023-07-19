@@ -11,13 +11,10 @@ use App\Controllers\TimeAndDate;
 
 class Income extends Authenticated{
     
-    public $incomeCategories = [];
-
     public function newAction(){
       
-        $this->incomeCategories = Earning::getDefaultIncomeCategories();
         View::renderTemplate('Income/new.html', [
-            'categories' => $this->incomeCategories,
+            'categories' => Earning::getDefaultIncomeCategories(),
             'presentDate' => TimeAndDate::getPresentDate()
         ]);
     }
@@ -26,13 +23,6 @@ class Income extends Authenticated{
 
         $income = new Earning($_POST);
      
-        $this->incomeCategories = Earning::getDefaultIncomeCategories();
-
-
-        if(! Earning::checkIfUserHasDefaultCategories()){
-            $income->saveToAssignedCategories($this->incomeCategories);
-        } 
-
         if($income->saveToIncomes() === true){
             Flash::addMessages('Superb!', 'success');
             $this->redirect('/Income/success');
@@ -40,7 +30,7 @@ class Income extends Authenticated{
             $errorMessage = implode(" ", $income->saveToIncomes());
             Flash::addMessages($errorMessage, 'warning');
             View::renderTemplate('Income/new.html', [
-                'categories' => $this->incomeCategories,
+                'categories' => Earning::getDefaultIncomeCategories(),
                 'presentDate' => TimeAndDate::getPresentDate()
             ]);
         }

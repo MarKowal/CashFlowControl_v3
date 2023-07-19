@@ -43,7 +43,7 @@ class Expenditure extends \Core\Model{
         return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
-    public static function checkIfUserHasDefaultExpenseCategories(){
+    private function checkIfUserHasDefaultExpenseCategories(){
 
         $sql = 'SELECT name FROM expenses_category_assigned_to_users WHERE user_id = :id';
         $db = static::getDB();
@@ -51,46 +51,44 @@ class Expenditure extends \Core\Model{
         $stmt->bindParam(':id', $_SESSION['user_id'], PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_COLUMN, 1);
+        if($stmt->fetch(PDO::FETCH_COLUMN, 1)){
+            return true;
+        } 
+        return false;
     }
 
-    public function saveExpensesToAssignedCategories($categories){
+    private function saveExpensesToAssignedCategories(){
         
         $db = static::getDB();
-
-        for($i=0; $i<count($categories); $i++){
-            $sql = 'INSERT INTO expenses_category_assigned_to_users (user_id, name) 
-                    VALUES (:user_id, :name)';
-            $stmt = $db->prepare($sql);
-            $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
-            $stmt->bindValue(':name', $categories[$i], PDO::PARAM_STR);
-            $stmt->execute();
-        }
+        $sql = 'INSERT INTO expenses_category_assigned_to_users (user_id, name) 
+                SELECT :user_id, name FROM expenses_category_default ORDER BY name ASC';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->execute();
     }
 
-    public static function checkIfUserHasDefaultPaymentCategories(){
+    private function  checkIfUserHasDefaultPaymentCategories(){
 
-        $sql = 'SELECT name FROM payment_methods_assigned_to_users WHERE user_id = :id';
+        $sql = 'SELECT name FROM payment_methods_assigned_to_users WHERE user_id = :user_id';
         $db = static::getDB();
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_COLUMN, 1);
+        if($stmt->fetch(PDO::FETCH_COLUMN, 1)){
+            return true;
+        } 
+        return false;
     }
 
-    public function savePaymentsToAssignedCategories($categories){
+    private function savePaymentsToAssignedCategories(){
         
         $db = static::getDB();
-
-        for($i=0; $i<count($categories); $i++){
-            $sql = 'INSERT INTO payment_methods_assigned_to_users (user_id, name) 
-                    VALUES (:user_id, :name)';
-            $stmt = $db->prepare($sql);
-            $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
-            $stmt->bindValue(':name', $categories[$i], PDO::PARAM_STR);
-            $stmt->execute();
-        }
+        $sql = 'INSERT INTO payment_methods_assigned_to_users (user_id, name) 
+                SELECT :id, name FROM payment_methods_default';
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     protected function validate(){
@@ -122,7 +120,7 @@ class Expenditure extends \Core\Model{
         }
     }
 
-    protected function getExpenseCategoryIdAssignedToUser(){
+    private function getExpenseCategoryIdAssignedToUser(){
 
         $sql = 'SELECT id FROM expenses_category_assigned_to_users WHERE user_id = :id AND name = :expenseCategory';
         $db = static::getDB();
@@ -134,7 +132,7 @@ class Expenditure extends \Core\Model{
         return $stmt->fetch(PDO::FETCH_COLUMN, 0);
     }
 
-    protected function getPaymentCategoryIdAssignedToUser(){
+    private function getPaymentCategoryIdAssignedToUser(){
 
         $sql = 'SELECT id FROM payment_methods_assigned_to_users WHERE user_id = :id AND name = :paymentCategory';
         $db = static::getDB();
@@ -148,6 +146,13 @@ class Expenditure extends \Core\Model{
 
 
     public function saveToExpenses(){
+
+        if($this->checkIfUserHasDefaultExpenseCategories() == false){
+            $this->saveExpensesToAssignedCategories();
+        } 
+        if($this->checkIfUserHasDefaultPaymentCategories() == false){
+            $this->savePaymentsToAssignedCategories();
+        } 
 
         $this->validate();
 

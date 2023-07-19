@@ -1,21 +1,25 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Models;
 
 use App\Models\Earning;
+use App\Controllers\TimeAndDate;
 
 
-class IncomesForBalanceSheet extends Authenticated{
+class IncomesForBalanceSheet extends \Core\Model{
 
     private $dateStart;
     private $dateEnd;
     private $incomesBalanceSheet;
 
-    public function __construct($dateStart, $dateEnd){
-        $this->dateStart = $dateStart;
-        $this->dateEnd = $dateEnd;
-        $incomesBalanceSheet = [];
+    public function __construct(){
+        $dateStart = new TimeAndDate();
+        $this->dateStart = $dateStart->getStartDate();
 
+        $dateEnd = new TimeAndDate();
+        $this->dateEnd = $dateEnd->getEndDate();
+        
+        $expenseBalanceSheet = [];
     }
 
     private function makeSumOfEachIncome(){
@@ -49,7 +53,7 @@ class IncomesForBalanceSheet extends Authenticated{
     }
 
     private function getAmountOfIncomes(){
-        $amountOfIncomes;
+        $amountOfIncomes = [];
 
         $sumOfIncomes = $this->makeSumOfEachIncome();
         $allIncomeCategoryNames = $this->makeAllIncomeCategoryNames();
@@ -110,7 +114,7 @@ class IncomesForBalanceSheet extends Authenticated{
             return  $this->incomesBalanceSheet;
 
         } else {
-            return false;
+            return ["-","none","-"];
         }
     }
 

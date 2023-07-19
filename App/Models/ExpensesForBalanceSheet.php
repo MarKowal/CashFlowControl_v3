@@ -1,19 +1,24 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Models;
 
 use App\Models\Expenditure;
+use App\Controllers\TimeAndDate;
 
 
-class ExpensesForBalanceSheet extends Authenticated{
+class ExpensesForBalanceSheet extends \Core\Model{
 
     private $dateStart;
     private $dateEnd;
     private $expenseBalanceSheet;
 
-    public function __construct($dateStart, $dateEnd){
-        $this->dateStart = $dateStart;
-        $this->dateEnd = $dateEnd;
+    public function __construct(){
+        $dateStart = new TimeAndDate();
+        $this->dateStart = $dateStart->getStartDate();
+
+        $dateEnd = new TimeAndDate();
+        $this->dateEnd = $dateEnd->getEndDate();
+        
         $expenseBalanceSheet = [];
     }
 
@@ -49,7 +54,7 @@ class ExpensesForBalanceSheet extends Authenticated{
 
     private function getAmountOfExpenses(){
        
-        $amountOfExpenses;
+        $amountOfExpenses = [];
 
         $sumOfExpenses = $this->makeSumOfEachExpense();
         $allExpenseCategoryNames = $this->makeAllExpenseCategoryNames();
@@ -110,7 +115,7 @@ class ExpensesForBalanceSheet extends Authenticated{
             return  $this->expenseBalanceSheet;
 
         }
-        return false;
+        return ["-","none","-"];
     }
 
     public function sumUpExpenses(){

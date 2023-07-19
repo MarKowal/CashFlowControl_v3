@@ -2,23 +2,24 @@
 
 namespace App\Controllers;
 
+//use App\Models\Earning;
+//use App\Models\Expenditure;
+//use DateTime; 
 use \Core\View;
-use App\Models\Earning;
-use App\Models\Expenditure;
-use DateTime; 
-use App\Flash;
-use App\Controllers\TimeAndDate;
-
+//use App\Flash;
+//use App\Controllers\TimeAndDate;
+use App\Models\IncomesForBalanceSheet;
+use App\Models\ExpensesForBalanceSheet;
 
 class BalanceSheet extends Authenticated{
     
-    private $dateStart;
-    private $dateEnd;
-    private $sumOfIncomes;
-    private $balanceOfIncomes;
-    private $sumOfExpenses;
-    private $balanceOfExpenses;
-    private $flagForBalanceMessage;
+   // private $dateStart;
+  //  private $dateEnd;
+   // private $sumOfIncomes;
+  //  private $balanceOfIncomes;
+   // private $sumOfExpenses;
+   // private $balanceOfExpenses;
+    private $goodBalanceMessage;
     private $balanceMessage;
 
 
@@ -28,6 +29,8 @@ class BalanceSheet extends Authenticated{
 
     public function prepareIncomesAndExpensesToShow(){
 
+        
+        /*
         $this->indicateStartAndEndDates();
 
         $incomes = new IncomesForBalanceSheet($this->dateStart, $this->dateEnd);
@@ -49,25 +52,50 @@ class BalanceSheet extends Authenticated{
         }
 
         $this->makeMessageAfterBalance();
-        $this->show();
+        */
+      //  $this->show();
     }
 
     public function showAction(){
+
+        $incomes = new IncomesForBalanceSheet();
+        $expenses = new ExpensesForBalanceSheet();
+
+        if ($incomes->sumUpIncomes() > $expenses->sumUpExpenses()){
+            $this->goodBalanceMessage = true;
+            $this->balanceMessage = 'Very Good! You have savings.';
+        } else {
+            $this->balanceMessage = 'Sorry! Could be better.';
+        } 
         
         View::renderTemplate('BalanceSheet/show.html', [
-            'sumOfIncomes' => $this->sumOfIncomes,
-            'balanceOfIncomes' => $this->balanceOfIncomes,
-            'sumOfExpenses' => $this->sumOfExpenses,
-            'balanceOfExpenses' => $this->balanceOfExpenses,
-            'flagForBalanceMessage' => $this->flagForBalanceMessage,
+            'sumOfIncomes' => $incomes->sumUpIncomes(),
+            'balanceOfIncomes' => $incomes->makeIncomesBalanceSheet(),
+            'sumOfExpenses' => $expenses->sumUpExpenses(),
+            'balanceOfExpenses' => $expenses->makeExpensesBalanceSheet(),
+            'goodBalanceMessage' => $this->goodBalanceMessage,
             'balanceMessage' => $this->balanceMessage
         ]);
 
 
     }
-
+    
+    /*
     private function indicateStartAndEndDates(){
 
+
+        echo "<pre>";
+        var_dump($_POST);
+        $dateStart = new TimeAndDate();
+        echo $dateStart->getStartDate()."<br>";
+        $dateEnd = new TimeAndDate();
+        echo $dateEnd->getEndDate();
+
+        exit();
+
+
+
+       
         $date = new TimeAndDate();
 
         if(isset($_POST['dateStartFromUser'])){
@@ -79,8 +107,10 @@ class BalanceSheet extends Authenticated{
             $this->dateStart = $date->indicateStartDate();
             $this->dateEnd = $date->indicateEndDate();
         }
+        
     }
-
+    */
+/*
     private function makeMessageAfterBalance(){
 
         if ($this->sumOfIncomes > $this->sumOfExpenses){
@@ -90,6 +120,7 @@ class BalanceSheet extends Authenticated{
             $this->balanceMessage = 'Sorry! Could be better.';
         } 
     }
+    */
     
 }
 
