@@ -14,7 +14,7 @@ class Expenditure extends \Core\Model{
     private $id;
     private $user_id;
     private $name;
-    public $errors; 
+    public $errorMessage; 
 
     public function __construct($data = []){
          foreach($data as $key => $value){
@@ -90,34 +90,34 @@ class Expenditure extends \Core\Model{
         $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
         $stmt->execute();
     }
-
-    protected function validate(){
-
-        $this->errors = [];
+   
+    private function validate(){
         
-        if (empty($this->amount) || $this->amount == ''){
-            $this->errors[] = 'Amount is required.';
+        if (! isset($this->amount)){
+            $this->errorMessage = 'Amount is required.';
+            return false;
         }
-
-        if (empty($this->date) || $this->date == ''){
-            $this->errors[] = 'Date is required.';
+        elseif ((int)$this->amount <= 0){
+            $this->errorMessage = 'Amount must be more than zero.';
+            return false;
         }
-
-        if (empty($this->paymentCategory) || $this->paymentCategory == ''){
-            $this->errors[] = 'Payment category is required.';
+        elseif  (! isset($this->date)){
+            $this->errorMessage = 'Date is required.';
+            return false;
         }
-
-        if (empty($this->expenseCategory) || $this->expenseCategory == ''){
-            $this->errors[] = 'Expense category is required.';
+        elseif  (! isset($this->paymentCategory)){
+            $this->errorMessage = 'Payment category is required.';
+            return false;
         }
-
-        if ((int)$this->amount <= 0){
-            $this->errors[] = 'Amount must be more than zero.';
+        elseif  (! isset($this->expenseCategory)){
+            $this->errorMessage = 'Expense category is required.';
+            return false;
         }
-
-        if (! strtotime($this->date)){
-            $this->errors[] = 'Date must be a date-type';
+        elseif (! strtotime($this->date)){
+            $this->errorMessage = 'Date must be a date-type';
+            return false;
         }
+        return true;
     }
 
     private function getExpenseCategoryIdAssignedToUser(){
@@ -154,9 +154,7 @@ class Expenditure extends \Core\Model{
             $this->savePaymentsToAssignedCategories();
         } 
 
-        $this->validate();
-
-        if (empty($this->errors)){
+        if ($this->validate()){
 
             $sql = 'INSERT INTO expenses (user_id, exp_cat_assigned_user_id, pay_meth_assigned_user_id, 
                     amount, date_of_expense, expense_comment) 
@@ -176,7 +174,7 @@ class Expenditure extends \Core\Model{
             return $stmt->execute();
 
         } else {
-            return $this->errors;
+            return false;
         }
     }
 

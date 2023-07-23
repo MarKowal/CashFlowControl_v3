@@ -23,12 +23,11 @@ class Income extends Authenticated{
 
         $income = new Earning($_POST);
      
-        if($income->saveToIncomes() === true){
+        if($income->saveToIncomes()){
             Flash::addMessages('Superb!', 'success');
             $this->redirect('/Income/success');
         } else {
-            $errorMessage = implode(" ", $income->saveToIncomes());
-            Flash::addMessages($errorMessage, 'warning');
+            Flash::addMessages($income->errorMessage, 'warning');
             View::renderTemplate('Income/new.html', [
                 'categories' => Earning::getDefaultIncomeCategories(),
                 'presentDate' => TimeAndDate::getPresentDate()
