@@ -28,8 +28,7 @@ class Expense extends Authenticated{
             Flash::addMessages('Superb!', 'success');
             $this->redirect('/Expense/success');
         } else {
-            $errorMessage = implode(" ", $expense->saveToExpenses());
-            Flash::addMessages($errorMessage, 'warning');
+            Flash::addMessages($expense->errorMessage, 'warning');
             View::renderTemplate('Expense/new.html', [
                 'categories' => Expenditure::getDefaultExpenseCategories(),
                 'presentDate' => TimeAndDate::getPresentDate(),

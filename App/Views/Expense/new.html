@@ -15,27 +15,27 @@
                 <div>
                     <label for="inputAmount" class="col-form-label">Amount</label>
                     <div class="col mb-3">
-                        <input type="number" name="amount" id="inputAmount" placeholder="0,00" required min="0" step="1" class="form-control">
+                        <input type="number" name="amount" id="inputAmount" placeholder="0,00"  min="0" step="1" class="form-control">
                     </div>
                 </div>
                 <div>
                     <label for="inputDate" class="col-form-label">Date</label>
                     <div class="col-4 mb-3">
-                        <input type="date" name="date" id="inputDate" required value="{{ presentDate }}" class="form-control">
+                        <input type="date" name="date" id="inputDate"  value="{{ presentDate }}" class="form-control">
                     </div>
                 </div>
-                <p class="text-start">Means of payment:</p>
                 <div>
-                    <select class="form-select mb-2 col-6" name="paymentCategory">
+                    <label for="paymentCategory" class="col-form-label">Means of payment:</label>
+                    <select class="form-select mb-2 col-6" name="paymentCategory" id="paymentCategory" required>
                         <option disabled selected>select</option>
                         {% for payment in payments %}
                         <option value="{{ payment }}">{{ payment }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <p class="text-start">Category of expense:</p>
                 <div>
-                    <select class="form-select mb-2 col-6" name="expenseCategory">
+                    <label for="expenseCategory" class="col-form-label">Category of expense:</label>
+                    <select class="form-select mb-2 col-6" name="expenseCategory" id="expenseCategory" required>
                         <option disabled selected>select</option>
                         {% for category in categories %}
                         <option value="{{ category }}">{{ category }}</option>

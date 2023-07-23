@@ -68,6 +68,11 @@ class BalanceSheet extends Authenticated{
             $this->balanceMessage = 'Sorry! Could be better.';
         } 
         
+        echo "<pre>";
+        var_dump($incomes->makeIncomesBalanceSheet());
+        var_dump($expenses->makeExpensesBalanceSheet());
+        exit();
+
         View::renderTemplate('BalanceSheet/show.html', [
             'sumOfIncomes' => $incomes->sumUpIncomes(),
             'balanceOfIncomes' => $incomes->makeIncomesBalanceSheet(),

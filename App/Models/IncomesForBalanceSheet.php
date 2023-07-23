@@ -112,7 +112,7 @@ class IncomesForBalanceSheet extends \Core\Model{
             $numbers = $this->countNumberOfItems($names);
             $this->incomesBalanceSheet = $this->createIncomesTable($numbers, $names, $amounts);
             return  $this->incomesBalanceSheet;
-
+            
         } else {
             return ["-","none","-"];
         }

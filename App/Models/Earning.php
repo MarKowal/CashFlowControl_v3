@@ -14,7 +14,7 @@ class Earning extends \Core\Model{
     private $id;
     private $user_id;
     private $name;
-    public $errors; 
+    public $errorMessage; 
 
     public function __construct($data = []){
          foreach($data as $key => $value){
@@ -77,7 +77,7 @@ class Earning extends \Core\Model{
 
         $this->validate();
 
-        if (empty($this->errors)){
+        if ($this->validate()){
 
             $sql = 'INSERT INTO incomes (user_id, inc_cat_assigned_user_id, amount, date_of_income, income_comment) 
                     VALUES (:user_id, :inc_cat_assigned_user_id, :amount, :date_of_income, :income_comment)';
@@ -94,33 +94,33 @@ class Earning extends \Core\Model{
             return $stmt->execute();
 
         } else {
-            return $this->errors;
+            return false;
         }
     }
 
     private function validate(){
-        
-        $this->errors = [];
 
-        if (empty($this->amount) || $this->amount == " "){
-            $this->errors[] = 'Amount is required.';
+        if (! isset($this->amount)){
+            $this->errorMessage = 'Amount is required.';
+            return false;
         }
-
-        if (empty($this->date) || $this->date == ''){
-            $this->errors[] = 'Date is required.';
+        elseif ((int)$this->amount <= 0){
+            $this->errorMessage = 'Amount must be more than zero.';
+            return false;
         }
-
-        if (empty($this->incomeCategory) || $this->incomeCategory == ''){
-            $this->errors[] = 'Income category is required.';
+        elseif  (! isset($this->date)){
+            $this->errorMessage = 'Date is required.';
+            return false;
         }
-
-        if ((int)$this->amount <= 0){
-            $this->errors[] = 'Amount must be more than zero.';
+        elseif  (! isset($this->incomeCategory)){
+            $this->errorMessage = 'Income category is required.';
+            return false;
         }
-
-        if (! strtotime($this->date)){
-            $this->errors[] = 'Date must be a date-type';
+        elseif (! strtotime($this->date)){
+            $this->errorMessage = 'Date must be a date-type';
+            return false;
         }
+        return true;
 
     }
 
