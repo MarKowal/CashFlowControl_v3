@@ -6,13 +6,13 @@ use \Core\View;
 use App\Models\IncomesForBalanceSheet;
 use App\Models\ExpensesForBalanceSheet;
 
-class BalanceSheet extends Authenticated{
+class Balancesheet extends Authenticated{
     
     private $goodBalanceMessage;
     private $balanceMessage;
 
     public function newAction(){
-        View::renderTemplate('BalanceSheet/new.html');
+        View::renderTemplate('Balancesheet/new.html');
     }
 
     public function showAction(){
@@ -26,8 +26,8 @@ class BalanceSheet extends Authenticated{
         } else {
             $this->balanceMessage = 'Sorry! Could be better.';
         } 
-        
-        View::renderTemplate('BalanceSheet/show.html', [
+
+        View::renderTemplate('Balancesheet/show.html', [
             'sumOfIncomes' => $incomes->sumUpIncomes(),
             'balanceOfIncomes' => $incomes->makeIncomesBalanceSheet(),
             'sumOfExpenses' => $expenses->sumUpExpenses(),
