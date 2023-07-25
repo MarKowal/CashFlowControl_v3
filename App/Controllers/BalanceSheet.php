@@ -5,6 +5,8 @@ namespace App\Controllers;
 use \Core\View;
 use App\Models\IncomesForBalanceSheet;
 use App\Models\ExpensesForBalanceSheet;
+use App\Controllers\TimeAndDate;
+
 
 class Balancesheet extends Authenticated{
     
@@ -19,6 +21,7 @@ class Balancesheet extends Authenticated{
 
         $incomes = new IncomesForBalanceSheet();
         $expenses = new ExpensesForBalanceSheet();
+        $time = new TimeAndDate();
 
         if ($incomes->sumUpIncomes() > $expenses->sumUpExpenses()){
             $this->goodBalanceMessage = true;
@@ -33,7 +36,9 @@ class Balancesheet extends Authenticated{
             'sumOfExpenses' => $expenses->sumUpExpenses(),
             'balanceOfExpenses' => $expenses->makeExpensesBalanceSheet(),
             'goodBalanceMessage' => $this->goodBalanceMessage,
-            'balanceMessage' => $this->balanceMessage
+            'balanceMessage' => $this->balanceMessage,
+            'startDate' => $time->getStartDate(),
+            'endDate' => $time->getEndDate()
         ]);
     }
 }
