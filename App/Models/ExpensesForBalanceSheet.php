@@ -121,7 +121,7 @@ class ExpensesForBalanceSheet extends \Core\Model{
     public function sumUpExpenses(){
         $amounts = $this->getAmountOfExpenses();
         $sumUp = [];
-        $sumUp = array_sum($amounts);
+        $sumUp = number_format((float)array_sum($amounts), 2, '.', ' ');
         return $sumUp;
     }
 

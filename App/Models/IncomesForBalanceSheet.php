@@ -121,7 +121,7 @@ class IncomesForBalanceSheet extends \Core\Model{
     public function sumUpIncomes(){
         $amounts = $this->getAmountOfIncomes();
         $sumUp = [];
-        $sumUp = array_sum($amounts);
+        $sumUp = number_format((float)array_sum($amounts), 2, '.', ' ');
         return $sumUp;
     }
 
