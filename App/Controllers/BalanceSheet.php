@@ -5,11 +5,14 @@ namespace App\Controllers;
 use \Core\View;
 use App\Models\IncomesForBalanceSheet;
 use App\Models\ExpensesForBalanceSheet;
+use App\Controllers\TimeAndDate;
+
 
 class Balancesheet extends Authenticated{
     
     private $goodBalanceMessage;
     private $balanceMessage;
+    private $balance;
 
     public function newAction(){
         View::renderTemplate('Balancesheet/new.html');
@@ -19,13 +22,9 @@ class Balancesheet extends Authenticated{
 
         $incomes = new IncomesForBalanceSheet();
         $expenses = new ExpensesForBalanceSheet();
+        $time = new TimeAndDate();
 
-        if ($incomes->sumUpIncomes() > $expenses->sumUpExpenses()){
-            $this->goodBalanceMessage = true;
-            $this->balanceMessage = 'Very Good! You have savings.';
-        } else {
-            $this->balanceMessage = 'Sorry! Could be better.';
-        } 
+        $this->getDiffBetweenIncomesAndExpenses($incomes->sumUpIncomes(), $expenses->sumUpExpenses());
 
         View::renderTemplate('Balancesheet/show.html', [
             'sumOfIncomes' => $incomes->sumUpIncomes(),
@@ -33,8 +32,26 @@ class Balancesheet extends Authenticated{
             'sumOfExpenses' => $expenses->sumUpExpenses(),
             'balanceOfExpenses' => $expenses->makeExpensesBalanceSheet(),
             'goodBalanceMessage' => $this->goodBalanceMessage,
-            'balanceMessage' => $this->balanceMessage
+            'balanceMessage' => $this->balanceMessage,
+            'startDate' => $time->getStartDate(),
+            'endDate' => $time->getEndDate(),
+            'balance' => $this->balance
         ]);
+    }
+
+    private function getDiffBetweenIncomesAndExpenses($sumOfIncomes, $sumOfExpenses){
+
+        $difference = $sumOfIncomes - $sumOfExpenses;
+
+        if($difference > 0) {
+            $this->goodBalanceMessage = true;
+            $this->balanceMessage = 'Great, you have savings:';
+            $this->balance = number_format((float)$difference, 2, '.', ' ');
+        } else {
+            $this->goodBalanceMessage = false;
+            $this->balanceMessage = 'Sorry, you have debts:';
+            $this->balance = number_format((float)$difference, 2, '.', ' ');
+        }
     }
 }
 
