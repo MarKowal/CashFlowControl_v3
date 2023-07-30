@@ -3,27 +3,44 @@
 namespace App\Controllers;
 
 use \Core\View;
+use App\Models\Earning;
+use App\Models\Expenditure;
 
 class Edit extends Authenticated{
 
+    private $incomesCategories;
+    private $expensesCategories;
+    private $paymentsCategories;
+
+    public function __construct(){
+        $this->incomesCategories = new Earning();
+        $this->expensesCategories = new Expenditure();
+        $this->paymentsCategories = new Expenditure();
+   }
+
     public function newAction(){
 
-        //trzeba pobrać i wyświetlić kategorie przychodów danego usera z ich ID
-
-        View::renderTemplate('Edit/new.html');
+        View::renderTemplate('Edit/new.html', [
+            'incomesCategories' => $this->incomesCategories->getIncomeCategoryNameAssignedToUser(),
+            'expensesCategories' => $this->expensesCategories->getExpenseCategoryNameAssignedToUser(),
+            'paymentsCategories' => $this->paymentsCategories->getPaymentCategoryNameAssignedToUser()
+        ]);
     }
 
-    public function addIncomeCatAction(){
-        echo "Add category";
+    public function groupAction(){
+
+        //trzeba przenieść poniższą logikę do poszczególnych modeli
+
+        $key = implode((array_keys($_POST)));
+        echo "klucz = ".$key;
+        echo "<br>";
+        $value = implode((array_values($_POST)));
+        echo "wartość = ".$value;
+        echo "<br>";
+        echo "ID usera = ".$_SESSION['user_id'];
     }
 
-    public function rewriteIncomeCatAction(){
-        echo "Rewrite category";
-    }
 
-    public function deleteIncomeCatAction(){
-        echo "Delete category";
-    }
 
 
 }

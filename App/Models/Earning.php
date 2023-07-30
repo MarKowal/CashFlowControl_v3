@@ -150,11 +150,23 @@ class Earning extends \Core\Model{
         $db = static::getDB();
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function getIncomeCategoryNameAssignedToUser(){
+
+        $sql = 'SELECT name FROM incomes_category_assigned_to_users WHERE user_id = :id';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
 
+    }
 
 
 }
