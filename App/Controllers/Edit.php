@@ -31,13 +31,19 @@ class Edit extends Authenticated{
 
         //trzeba przenieść poniższą logikę do poszczególnych modeli
 
-        $key = implode((array_keys($_POST)));
-        echo "klucz = ".$key;
+
+        var_dump($_POST);
         echo "<br>";
-        $value = implode((array_values($_POST)));
-        echo "wartość = ".$value;
-        echo "<br>";
-        echo "ID usera = ".$_SESSION['user_id'];
+       // $key = implode((array_keys($_POST)));
+     //   echo "klucz = ".$key;
+     //   echo "<br>";
+       // $value = implode((array_values($_POST)));
+      //  echo "wartość = ".$value;
+      //  echo "<br>";
+      //  echo "ID usera = ".$_SESSION['user_id'];
+      
+
+      // WALIDACJĘ TRZEBA ZROBIĆ TEGO CO USER WPISUJE
     }
 
 
