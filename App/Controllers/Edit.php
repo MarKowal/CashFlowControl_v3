@@ -27,11 +27,11 @@ class Edit extends Authenticated{
         ]);
     }
 
-    public function groupAction(){
+    public function addIncomeAction(){
 
         //trzeba przenieść poniższą logikę do poszczególnych modeli
 
-
+        echo "add income<br>";
         var_dump($_POST);
         echo "<br>";
        // $key = implode((array_keys($_POST)));
@@ -46,7 +46,41 @@ class Edit extends Authenticated{
       // WALIDACJĘ TRZEBA ZROBIĆ TEGO CO USER WPISUJE
     }
 
+    public function renameAction(){
+    
+        $typeOfRename = implode(array_keys($_POST));
+        $oldName = $_POST['rename-income'];
+        
+        if($typeOfRename == "rename-income"){
+            View::renderTemplate('Edit/rename.html', [
+                'renameType' => 'renameIncome',
+                'oldName' => $oldName
+            ]);
+        } 
+        elseif($typeOfRename == "rename-expense"){
+            View::renderTemplate('Edit/rename.html', [
+                'renameType' => 'renameExpense',
+                'old-name' => $oldName
+            ]);
+        } 
+        elseif($typeOfRename == "rename-payment"){
+            View::renderTemplate('Edit/rename.html', [
+                'renameType' => 'renamePayment',
+                'old-name' => $oldName
+            ]);
+        }
+    }
 
+    public function renameIncomeAction(){
+        echo "zmiana nazwy dla Income.<br>";
+        var_dump($_POST);
 
+    }
+
+    public function deleteIncomeAction(){
+        echo "delete income<br>";
+        var_dump($_POST);
+        echo "<br>";
+    }
 
 }

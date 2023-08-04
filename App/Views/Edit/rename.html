@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Edit{% endblock %}
+
+{% block body %}
+    
+    <h1 class="text-center mt-3 mb-5">Edit categories</h1>
+  
+    <form method="post" action="/edit/{{renameType}}">
+        <div class="form-group">
+            <p>Old name: {{ oldName }}</p>
+            <input type="text" name="rename-old" id="rename-old" value="{{ oldName }}" hidden >
+        </div>
+
+        <div class="form-group">
+            <label for="rename-new">New name:</label>
+            <input type="text" id="rename-new" name="rename-new">
+        </div>
+
+        <button type="submit">
+            Submit
+        </button>
+
+    </form>
+
+{% endblock %}
