@@ -168,5 +168,43 @@ class Earning extends \Core\Model{
 
     }
 
+    public function addNewIncomeCategory($newIncomeName){
+
+        if ($this->validateNewIncomeCategoryName($newIncomeName)){
+
+            echo "good name for the category";
+
+        } else {
+            return $this->errorMessage;
+        }
+        
+
+    }
+
+    private function validateNewIncomeCategoryName($newIncomeName){
+
+        if (strlen($newIncomeName) < 2){
+            $this->errorMessage = 'Category name must have at least 2 characters.';
+            return false;
+        }        
+
+        if (preg_match('/([A-Z])+/', $newIncomeName) == 1){
+            $this->errorMessage = 'Category cannot include big letters.';
+            return false;
+        }
+
+        if (preg_match('/[\d]/', $newIncomeName) == 1){
+            $this->errorMessage = 'Category cannot include numbers.';
+            return false;
+        }
+
+        if (preg_match('/[\W+]/', $newIncomeName) == 1){
+            $this->errorMessage = 'Category cannot include special characters.';
+            return false;
+        }
+
+        return true;
+    }
+
 
 }

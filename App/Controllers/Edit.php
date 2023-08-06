@@ -31,19 +31,14 @@ class Edit extends Authenticated{
 
         //trzeba przenieść poniższą logikę do poszczególnych modeli
 
-        echo "add income<br>";
-        var_dump($_POST);
-        echo "<br>";
-       // $key = implode((array_keys($_POST)));
-     //   echo "klucz = ".$key;
-     //   echo "<br>";
-       // $value = implode((array_values($_POST)));
-      //  echo "wartość = ".$value;
-      //  echo "<br>";
-      //  echo "ID usera = ".$_SESSION['user_id'];
-      
+       // echo $_POST["add-income"];
+        
+        echo $this->incomesCategories->addNewIncomeCategory($_POST["add-income"]);
 
-      // WALIDACJĘ TRZEBA ZROBIĆ TEGO CO USER WPISUJE
+        //errorMessage we flasha to trzeba ubrać
+
+
+
     }
 
     public function renameAction(){
