@@ -5,6 +5,7 @@ namespace App\Controllers;
 use \Core\View;
 use App\Models\Earning;
 use App\Models\Expenditure;
+use App\Flash;
 
 class Edit extends Authenticated{
 
@@ -28,17 +29,14 @@ class Edit extends Authenticated{
     }
 
     public function addIncomeAction(){
-
-        //trzeba przenieść poniższą logikę do poszczególnych modeli
-
-       // echo $_POST["add-income"];
-        
-        echo $this->incomesCategories->addNewIncomeCategory($_POST["add-income"]);
-
-        //errorMessage we flasha to trzeba ubrać
-
-
-
+       
+        if($this->incomesCategories->addNewIncomeCategory($_POST["add-income"]) === true){
+            Flash::addMessages('New income category saved in data base.', 'success');
+            $this->redirect('/Edit/new');
+        } else {
+            Flash::addMessages($this->incomesCategories->errorMessage, 'warning');
+            $this->redirect('/Edit/new');
+        }
     }
 
     public function renameAction(){

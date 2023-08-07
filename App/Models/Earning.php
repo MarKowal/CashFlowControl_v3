@@ -171,14 +171,12 @@ class Earning extends \Core\Model{
     public function addNewIncomeCategory($newIncomeName){
 
         if ($this->validateNewIncomeCategoryName($newIncomeName)){
-
-            echo "good name for the category";
-
+            if($this->addNewIncomeCategoryInDB($newIncomeName)){
+                return true;
+            }
         } else {
             return $this->errorMessage;
         }
-        
-
     }
 
     private function validateNewIncomeCategoryName($newIncomeName){
@@ -188,7 +186,7 @@ class Earning extends \Core\Model{
             return false;
         }        
 
-        if (preg_match('/([A-Z])+/', $newIncomeName) == 1){
+        if (preg_match('/[A-Z]+/', $newIncomeName) == 1){
             $this->errorMessage = 'Category cannot include big letters.';
             return false;
         }
@@ -198,12 +196,25 @@ class Earning extends \Core\Model{
             return false;
         }
 
-        if (preg_match('/[\W+]/', $newIncomeName) == 1){
+        if (preg_match('/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/', $newIncomeName) == 1){
             $this->errorMessage = 'Category cannot include special characters.';
             return false;
         }
 
         return true;
+    }
+
+    private function addNewIncomeCategoryInDB($newIncomeName){
+
+        $sql = 'INSERT INTO incomes_category_assigned_to_users (user_id, name) 
+        VALUES (:user_id, :name)';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':name', $newIncomeName, PDO::PARAM_STR);
+
+        return $stmt->execute();
     }
 
 
