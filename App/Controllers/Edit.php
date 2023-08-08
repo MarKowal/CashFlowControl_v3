@@ -65,13 +65,30 @@ class Edit extends Authenticated{
     }
 
     public function renameIncomeAction(){
-        echo "zmiana nazwy dla Income.<br>";
-        var_dump($_POST);
-
+      
+        if($this->incomesCategories->renameIncomeCategory($_POST["rename-old"], $_POST["rename-new"]) === true){
+            Flash::addMessages('Renamed income category saved in data base.', 'success');
+            $this->redirect('/Edit/new');
+        } else {
+            Flash::addMessages($this->incomesCategories->errorMessage, 'warning');
+            $this->redirect('/Edit/new');
+        }
     }
 
     public function deleteIncomeAction(){
         echo "delete income<br>";
+        var_dump($_POST);
+        echo "<br>";
+    }
+
+    public function renameExpenseAction(){
+        echo "zmiana nazwy dla Expense:<br>";
+        var_dump($_POST);
+
+    }
+
+    public function deleteExpenseAction(){
+        echo "delete Expense<br>";
         var_dump($_POST);
         echo "<br>";
     }
