@@ -218,4 +218,30 @@ class Earning extends \Core\Model{
     }
 
 
+    public function renameIncomeCategory($oldIncomeName, $newIncomeName){
+
+        if ($this->validateNewIncomeCategoryName($newIncomeName)){
+            if($this->updateNewIncomeCategoryInDB($oldIncomeName, $newIncomeName)){
+                return true;
+            }
+        } else {
+            return $this->errorMessage;
+        }
+    }
+
+    private function updateNewIncomeCategoryInDB($oldIncomeName, $newIncomeName){
+
+        $sql = 'UPDATE incomes_category_assigned_to_users SET 
+                name = :newIncomeName
+                WHERE user_id = :user_id AND name = :oldIncomeName';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':newIncomeName', $newIncomeName, PDO::PARAM_STR);
+        $stmt->bindValue(':oldIncomeName', $oldIncomeName, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
 }
