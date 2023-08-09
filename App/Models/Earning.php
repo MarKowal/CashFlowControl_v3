@@ -244,4 +244,17 @@ class Earning extends \Core\Model{
         return $stmt->execute();
     }
 
+    public function deleteIncomeCategory($incomeName){
+
+        $sql = 'DELETE FROM incomes_category_assigned_to_users  
+                WHERE user_id = :user_id AND name = :incomeName';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':incomeName', $incomeName, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
 }

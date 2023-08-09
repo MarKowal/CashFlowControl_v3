@@ -76,9 +76,15 @@ class Edit extends Authenticated{
     }
 
     public function deleteIncomeAction(){
-        echo "delete income<br>";
-        var_dump($_POST);
-        echo "<br>";
+        
+        //może jakiś modal we View czy na pewno chce go usunąć?
+        if($this->incomesCategories->deleteIncomeCategory($_POST['delete-income']) === true){
+            Flash::addMessages('Income category has been deleted.', 'success');
+            $this->redirect('/Edit/new');
+        } else {
+            Flash::addMessages('Income category cannot be deleted', 'warning');
+            $this->redirect('/Edit/new');
+        }
     }
 
     public function renameExpenseAction(){
