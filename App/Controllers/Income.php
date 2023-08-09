@@ -12,11 +12,18 @@ use App\Controllers\TimeAndDate;
 class Income extends Authenticated{
     
     public function newAction(){
-      
-        View::renderTemplate('Income/new.html', [
-            'categories' => Earning::getDefaultIncomeCategories(),
-            'presentDate' => TimeAndDate::getPresentDate()
-        ]);
+    
+        if(Earning::checkIfUserHasDefaultCategories()){
+            View::renderTemplate('Income/new.html', [
+                'categories' => Earning::getIncomeCategoryNameAssignedToUser(),
+                'presentDate' => TimeAndDate::getPresentDate()
+            ]);
+        } else {
+            View::renderTemplate('Income/new.html', [
+                'categories' => Earning::getDefaultIncomeCategories(),
+                'presentDate' => TimeAndDate::getPresentDate()
+            ]);
+        }
     }
 
     public function createAction(){

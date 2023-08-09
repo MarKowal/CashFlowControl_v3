@@ -29,7 +29,7 @@ class Earning extends \Core\Model{
         $stmt = $db->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+       return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     private function saveToAssignedCategories(){
@@ -42,14 +42,14 @@ class Earning extends \Core\Model{
         $stmt->execute();
     }
 
-    private function checkIfUserHasDefaultCategories(){
+    public static function checkIfUserHasDefaultCategories(){
 
         $sql = 'SELECT name FROM incomes_category_assigned_to_users WHERE user_id = :id';
         $db = static::getDB();
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':id', $_SESSION['user_id'], PDO::PARAM_INT);
         $stmt->execute();
-
+        
         if($stmt->fetch(PDO::FETCH_COLUMN, 1)){
             return true;
         }
@@ -67,8 +67,7 @@ class Earning extends \Core\Model{
 
         return $stmt->fetch(PDO::FETCH_COLUMN, 0);
     }
-
-
+   
     public function saveToIncomes(){
 
         if($this->checkIfUserHasDefaultCategories() == false){
@@ -156,16 +155,15 @@ class Earning extends \Core\Model{
         return $stmt->fetchAll();
     }
 
-    public function getIncomeCategoryNameAssignedToUser(){
+    public static function getIncomeCategoryNameAssignedToUser(){
 
-        $sql = 'SELECT name FROM incomes_category_assigned_to_users WHERE user_id = :id';
+        $sql = 'SELECT name FROM incomes_category_assigned_to_users WHERE user_id = :user_id ORDER BY name ASC';
         $db = static::getDB();
         $stmt = $db->prepare($sql);
-        $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
         $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+        
+        return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public function addNewIncomeCategory($newIncomeName){
@@ -246,6 +244,8 @@ class Earning extends \Core\Model{
 
     public function deleteIncomeCategory($incomeName){
 
+        $this->deleteAllIncomesFromGivenCategory($incomeName);
+
         $sql = 'DELETE FROM incomes_category_assigned_to_users  
                 WHERE user_id = :user_id AND name = :incomeName';
 
@@ -257,4 +257,30 @@ class Earning extends \Core\Model{
         return $stmt->execute();
     }
 
+    private function deleteAllIncomesFromGivenCategory($incomeName){
+
+        $incomeID = $this->getByNameIncomeCategoryIdAssignedToUser($incomeName);
+        
+        $sql = 'DELETE FROM incomes  
+        WHERE user_id = :user_id AND inc_cat_assigned_user_id = :incomeID';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':incomeID', $incomeID, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    private function getByNameIncomeCategoryIdAssignedToUser($incomeName){
+
+        $sql = 'SELECT id FROM incomes_category_assigned_to_users WHERE user_id = :id AND name = :incomeCategory';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':incomeCategory', $incomeName, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_COLUMN, 0);
+    }
 }
