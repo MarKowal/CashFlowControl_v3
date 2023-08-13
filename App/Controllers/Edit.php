@@ -75,10 +75,43 @@ class Edit extends Authenticated{
         }
     }
 
+    public function renameExpenseAction(){
+        echo "zmiana nazwy dla Expense:<br>";
+        var_dump($_POST);
+    }
+
+    public function renamePaymentAction(){
+        echo "zmiana nazwy dla Payment:<br>";
+        var_dump($_POST);
+    }
+
+    public function deleteAction(){
+    
+        $typeOfDelete = implode(array_keys($_POST));
+        
+        if($typeOfDelete == "delete-income"){
+            View::renderTemplate('Edit/delete.html', [
+                'deleteType' => 'deleteIncome',
+                'categoryToDelete' => $_POST['delete-income']
+            ]);
+        } 
+        elseif($typeOfDelete == "delete-expense"){
+            View::renderTemplate('Edit/delete.html', [
+                'deleteType' => 'deleteExpense',
+                'categoryToDelete' => $_POST['delete-expense']
+            ]);
+        } 
+        elseif($typeOfDelete == "delete-payment"){
+            View::renderTemplate('Edit/delete.html', [
+                'deleteType' => 'deletePayment',
+                'categoryToDelete' => $_POST['delete-payment']
+            ]);
+        }
+    }
+
     public function deleteIncomeAction(){
         
-        //może jakiś modal we View czy na pewno chce go usunąć?
-        if($this->incomesCategories->deleteIncomeCategory($_POST['delete-income']) === true){
+        if($this->incomesCategories->deleteIncomeCategory($_POST['delete']) === true){
             Flash::addMessages('Income category has been deleted.', 'success');
             $this->redirect('/Edit/new');
         } else {
@@ -87,16 +120,21 @@ class Edit extends Authenticated{
         }
     }
 
-    public function renameExpenseAction(){
-        echo "zmiana nazwy dla Expense:<br>";
-        var_dump($_POST);
-
-    }
-
     public function deleteExpenseAction(){
         echo "delete Expense<br>";
         var_dump($_POST);
         echo "<br>";
     }
+
+
+
+
+
+
+
+
+
+
+
 
 }
