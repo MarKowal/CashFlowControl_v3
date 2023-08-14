@@ -22,22 +22,34 @@ class Edit extends Authenticated{
     public function newAction(){
 
         View::renderTemplate('Edit/new.html', [
-            'incomesCategories' => $this->incomesCategories->getIncomeCategoryNameAssignedToUser(),
-            'expensesCategories' => $this->expensesCategories->getExpenseCategoryNameAssignedToUser(),
-            'paymentsCategories' => $this->paymentsCategories->getPaymentCategoryNameAssignedToUser()
+            'incomesCategories' => Earning::getIncomeCategoryNameAssignedToUser(),
+            'expensesCategories' => Expenditure::getExpenseCategoryNameAssignedToUser(),
+            'paymentsCategories' => Expenditure::getPaymentCategoryNameAssignedToUser()
         ]);
     }
 
     public function addIncomeAction(){
        
         if($this->incomesCategories->addNewIncomeCategory($_POST["add-income"]) === true){
-            Flash::addMessages('New income category saved in data base.', 'success');
+            Flash::addMessages('New income category has been saved in data base.', 'success');
             $this->redirect('/Edit/new');
         } else {
             Flash::addMessages($this->incomesCategories->errorMessage, 'warning');
             $this->redirect('/Edit/new');
         }
     }
+
+    public function addExpenseAction(){
+       
+        if($this->expensesCategories->addNewExpenseCategory($_POST["add-expense"]) === true){
+            Flash::addMessages('New expense category has been saved in data base.', 'success');
+            $this->redirect('/Edit/new');
+        } else {
+            Flash::addMessages($this->expensesCategories->errorMessage, 'warning');
+            $this->redirect('/Edit/new');
+        }
+    }
+
 
     public function renameAction(){
     

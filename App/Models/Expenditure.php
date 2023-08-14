@@ -43,7 +43,7 @@ class Expenditure extends \Core\Model{
         return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
-    private function checkIfUserHasDefaultExpenseCategories(){
+    public static function checkIfUserHasDefaultExpenseCategories(){
 
         $sql = 'SELECT name FROM expenses_category_assigned_to_users WHERE user_id = :id';
         $db = static::getDB();
@@ -147,7 +147,7 @@ class Expenditure extends \Core\Model{
 
     public function saveToExpenses(){
 
-        if($this->checkIfUserHasDefaultExpenseCategories() == false){
+        if(self::checkIfUserHasDefaultExpenseCategories() == false){
             $this->saveExpensesToAssignedCategories();
         } 
         if($this->checkIfUserHasDefaultPaymentCategories() == false){
@@ -212,7 +212,7 @@ class Expenditure extends \Core\Model{
     }
 
 
-    public function getExpenseCategoryNameAssignedToUser(){
+    public static function getExpenseCategoryNameAssignedToUser(){
 
         $sql = 'SELECT name FROM expenses_category_assigned_to_users WHERE user_id = :id ORDER BY name ASC';
         $db = static::getDB();
@@ -220,10 +220,10 @@ class Expenditure extends \Core\Model{
         $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public function getPaymentCategoryNameAssignedToUser(){
+    public static function getPaymentCategoryNameAssignedToUser(){
 
         $sql = 'SELECT name FROM payment_methods_assigned_to_users WHERE user_id = :id ORDER BY name ASC';
         $db = static::getDB();
@@ -231,7 +231,56 @@ class Expenditure extends \Core\Model{
         $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function addNewExpenseCategory($newExpenseName){
+
+        if ($this->validateNewExpenseCategoryName($newExpenseName)){
+            if($this->addNewExpenseCategoryInDB($newExpenseName)){
+                return true;
+            }
+        } else {
+            return $this->errorMessage;
+        }
+    }
+
+    private function validateNewExpenseCategoryName($newExpenseName){
+
+        if (strlen($newExpenseName) < 2){
+            $this->errorMessage = 'Category name must have at least 2 characters.';
+            return false;
+        }        
+
+        if (preg_match('/[A-Z]+/', $newExpenseName) == 1){
+            $this->errorMessage = 'Category cannot include big letters.';
+            return false;
+        }
+
+        if (preg_match('/[\d]/', $newExpenseName) == 1){
+            $this->errorMessage = 'Category cannot include numbers.';
+            return false;
+        }
+
+        if (preg_match('/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/', $newExpenseName) == 1){
+            $this->errorMessage = 'Category cannot include special characters.';
+            return false;
+        }
+
+        return true;
+    }
+
+    private function addNewExpenseCategoryInDB($newExpenseName){
+
+        $sql = 'INSERT INTO expenses_category_assigned_to_users (user_id, name) 
+        VALUES (:user_id, :name)';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':name', $newExpenseName, PDO::PARAM_STR);
+
+        return $stmt->execute();
     }
 }
 
