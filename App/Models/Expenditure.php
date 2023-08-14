@@ -282,6 +282,30 @@ class Expenditure extends \Core\Model{
 
         return $stmt->execute();
     }
+
+    public function addNewPaymentCategory($newPaymentName){
+
+        if ($this->validateNewExpenseCategoryName($newPaymentName)){
+            if($this->addNewPaymentCategoryInDB($newPaymentName)){
+                return true;
+            }
+        } else {
+            return $this->errorMessage;
+        }
+    }
+
+    private function addNewPaymentCategoryInDB($newPaymentName){
+
+        $sql = 'INSERT INTO payment_methods_assigned_to_users (user_id, name) 
+        VALUES (:user_id, :name)';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':name', $newPaymentName, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
 }
 
 ?>

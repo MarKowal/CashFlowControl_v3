@@ -11,12 +11,12 @@ class Edit extends Authenticated{
 
     private $incomesCategories;
     private $expensesCategories;
-    private $paymentsCategories;
+   // private $paymentsCategories;
 
     public function __construct(){
         $this->incomesCategories = new Earning();
         $this->expensesCategories = new Expenditure();
-        $this->paymentsCategories = new Expenditure();
+      //  $this->paymentsCategories = new Expenditure();
    }
 
     public function newAction(){
@@ -43,6 +43,17 @@ class Edit extends Authenticated{
        
         if($this->expensesCategories->addNewExpenseCategory($_POST["add-expense"]) === true){
             Flash::addMessages('New expense category has been saved in data base.', 'success');
+            $this->redirect('/Edit/new');
+        } else {
+            Flash::addMessages($this->expensesCategories->errorMessage, 'warning');
+            $this->redirect('/Edit/new');
+        }
+    }
+
+    public function addPaymentAction(){
+       
+        if($this->expensesCategories->addNewPaymentCategory($_POST["add-payment"]) === true){
+            Flash::addMessages('New payment category has been saved in data base.', 'success');
             $this->redirect('/Edit/new');
         } else {
             Flash::addMessages($this->expensesCategories->errorMessage, 'warning');
@@ -133,9 +144,13 @@ class Edit extends Authenticated{
     }
 
     public function deleteExpenseAction(){
-        echo "delete Expense<br>";
-        var_dump($_POST);
-        echo "<br>";
+        
+
+    }
+
+    public function deletePaymentAction(){
+       
+        
     }
 
 

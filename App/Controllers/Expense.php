@@ -20,8 +20,6 @@ class Expense extends Authenticated{
                 'payments' => Expenditure::getPaymentCategoryNameAssignedToUser()
             ]);
         } else {
-
-           
             View::renderTemplate('Expense/new.html', [
                 'categories' => Expenditure::getDefaultExpenseCategories(),
                 'presentDate' => TimeAndDate::getPresentDate(),
