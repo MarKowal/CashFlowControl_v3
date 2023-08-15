@@ -11,12 +11,10 @@ class Edit extends Authenticated{
 
     private $incomesCategories;
     private $expensesCategories;
-   // private $paymentsCategories;
 
     public function __construct(){
         $this->incomesCategories = new Earning();
         $this->expensesCategories = new Expenditure();
-      //  $this->paymentsCategories = new Expenditure();
    }
 
     public function newAction(){
@@ -61,7 +59,6 @@ class Edit extends Authenticated{
         }
     }
 
-
     public function renameAction(){
     
         $typeOfRename = implode(array_keys($_POST));
@@ -100,8 +97,6 @@ class Edit extends Authenticated{
 
     public function renameExpenseAction(){
 
-        //TUTAJ SKOŃCZYŁEM 14.08.2023 !!!!!!!!!!!!!!!!!!!!1
-
         if($this->expensesCategories->renameExpenseCategory($_POST["rename-old"], $_POST["rename-new"]) === true){
             Flash::addMessages('Renamed expense category saved in data base.', 'success');
             $this->redirect('/Edit/new');
@@ -112,8 +107,14 @@ class Edit extends Authenticated{
     }
 
     public function renamePaymentAction(){
-        echo "zmiana nazwy dla Payment:<br>";
-        var_dump($_POST);
+
+        if($this->expensesCategories->renamePaymentCategory($_POST["rename-old"], $_POST["rename-new"]) === true){
+            Flash::addMessages('Renamed payment category saved in data base.', 'success');
+            $this->redirect('/Edit/new');
+        } else {
+            Flash::addMessages($this->expensesCategories->errorMessage, 'warning');
+            $this->redirect('/Edit/new');
+        }
     }
 
     public function deleteAction(){
