@@ -306,6 +306,32 @@ class Expenditure extends \Core\Model{
 
         return $stmt->execute();
     }
+
+    public function renameExpenseCategory($oldExpenseName, $newExpenseName){
+
+        if ($this->validateNewExpenseCategoryName($newExpenseName)){
+            if($this->updateNewExpenseCategoryInDB($oldExpenseName, $newExpenseName)){
+                return true;
+            }
+        } else {
+            return $this->errorMessage;
+        }
+    }
+
+    private function updateNewExpenseCategoryInDB($oldExpenseName, $newExpenseName){
+
+        $sql = 'UPDATE expenses_category_assigned_to_users SET 
+                name = :newExpenseName
+                WHERE user_id = :user_id AND name = :oldExpenseName';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':newExpenseName', $newExpenseName, PDO::PARAM_STR);
+        $stmt->bindValue(':oldExpenseName', $oldExpenseName, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
 }
 
 ?>

@@ -65,8 +65,8 @@ class Edit extends Authenticated{
     public function renameAction(){
     
         $typeOfRename = implode(array_keys($_POST));
-        $oldName = $_POST['rename-income'];
-        
+        $oldName = implode(array_values($_POST));
+
         if($typeOfRename == "rename-income"){
             View::renderTemplate('Edit/rename.html', [
                 'renameType' => 'renameIncome',
@@ -76,13 +76,13 @@ class Edit extends Authenticated{
         elseif($typeOfRename == "rename-expense"){
             View::renderTemplate('Edit/rename.html', [
                 'renameType' => 'renameExpense',
-                'old-name' => $oldName
+                'oldName' => $oldName
             ]);
         } 
         elseif($typeOfRename == "rename-payment"){
             View::renderTemplate('Edit/rename.html', [
                 'renameType' => 'renamePayment',
-                'old-name' => $oldName
+                'oldName' => $oldName
             ]);
         }
     }
@@ -99,8 +99,16 @@ class Edit extends Authenticated{
     }
 
     public function renameExpenseAction(){
-        echo "zmiana nazwy dla Expense:<br>";
-        var_dump($_POST);
+
+        //TUTAJ SKOŃCZYŁEM 14.08.2023 !!!!!!!!!!!!!!!!!!!!1
+
+        if($this->expensesCategories->renameExpenseCategory($_POST["rename-old"], $_POST["rename-new"]) === true){
+            Flash::addMessages('Renamed expense category saved in data base.', 'success');
+            $this->redirect('/Edit/new');
+        } else {
+            Flash::addMessages($this->expensesCategories->errorMessage, 'warning');
+            $this->redirect('/Edit/new');
+        }
     }
 
     public function renamePaymentAction(){
@@ -150,7 +158,7 @@ class Edit extends Authenticated{
 
     public function deletePaymentAction(){
        
-        
+
     }
 
 
