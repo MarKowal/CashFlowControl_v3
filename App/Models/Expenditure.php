@@ -43,7 +43,7 @@ class Expenditure extends \Core\Model{
         return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
-    private function checkIfUserHasDefaultExpenseCategories(){
+    public static function checkIfUserHasDefaultExpenseCategories(){
 
         $sql = 'SELECT name FROM expenses_category_assigned_to_users WHERE user_id = :id';
         $db = static::getDB();
@@ -147,7 +147,7 @@ class Expenditure extends \Core\Model{
 
     public function saveToExpenses(){
 
-        if($this->checkIfUserHasDefaultExpenseCategories() == false){
+        if(self::checkIfUserHasDefaultExpenseCategories() == false){
             $this->saveExpensesToAssignedCategories();
         } 
         if($this->checkIfUserHasDefaultPaymentCategories() == false){
@@ -201,7 +201,7 @@ class Expenditure extends \Core\Model{
 
     public function getExpenseCategoryNames(){
 
-        $sql = 'SELECT id, name FROM expenses_category_assigned_to_users WHERE user_id = :id';
+        $sql = 'SELECT id, name FROM expenses_category_assigned_to_users WHERE user_id = :id ORDER BY name ASC';
         $db = static::getDB();
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
@@ -209,6 +209,238 @@ class Expenditure extends \Core\Model{
         $stmt->execute();
 
         return $stmt->fetchAll();
+    }
+
+
+    public static function getExpenseCategoryNameAssignedToUser(){
+
+        $sql = 'SELECT name FROM expenses_category_assigned_to_users WHERE user_id = :id ORDER BY name ASC';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public static function getPaymentCategoryNameAssignedToUser(){
+
+        $sql = 'SELECT name FROM payment_methods_assigned_to_users WHERE user_id = :id ORDER BY name ASC';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function addNewExpenseCategory($newExpenseName){
+
+        if ($this->validateNewExpenseCategoryName($newExpenseName)){
+            if($this->addNewExpenseCategoryInDB($newExpenseName)){
+                return true;
+            }
+        } else {
+            return $this->errorMessage;
+        }
+    }
+
+    private function validateNewExpenseCategoryName($newExpenseName){
+
+        if (strlen($newExpenseName) < 2){
+            $this->errorMessage = 'Category name must have at least 2 characters.';
+            return false;
+        }        
+
+        if (preg_match('/[A-Z]+/', $newExpenseName) == 1){
+            $this->errorMessage = 'Category cannot include big letters.';
+            return false;
+        }
+
+        if (preg_match('/[\d]/', $newExpenseName) == 1){
+            $this->errorMessage = 'Category cannot include numbers.';
+            return false;
+        }
+
+        if (preg_match('/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/', $newExpenseName) == 1){
+            $this->errorMessage = 'Category cannot include special characters.';
+            return false;
+        }
+
+        return true;
+    }
+
+    private function addNewExpenseCategoryInDB($newExpenseName){
+
+        $sql = 'INSERT INTO expenses_category_assigned_to_users (user_id, name) 
+        VALUES (:user_id, :name)';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':name', $newExpenseName, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
+    public function addNewPaymentCategory($newPaymentName){
+
+        if ($this->validateNewExpenseCategoryName($newPaymentName)){
+            if($this->addNewPaymentCategoryInDB($newPaymentName)){
+                return true;
+            }
+        } else {
+            return $this->errorMessage;
+        }
+    }
+
+    private function addNewPaymentCategoryInDB($newPaymentName){
+
+        $sql = 'INSERT INTO payment_methods_assigned_to_users (user_id, name) 
+        VALUES (:user_id, :name)';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':name', $newPaymentName, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
+    public function renameExpenseCategory($oldExpenseName, $newExpenseName){
+
+        if ($this->validateNewExpenseCategoryName($newExpenseName)){
+            if($this->updateNewExpenseCategoryInDB($oldExpenseName, $newExpenseName)){
+                return true;
+            }
+        } else {
+            return $this->errorMessage;
+        }
+    }
+
+    private function updateNewExpenseCategoryInDB($oldExpenseName, $newExpenseName){
+
+        $sql = 'UPDATE expenses_category_assigned_to_users SET 
+                name = :newExpenseName
+                WHERE user_id = :user_id AND name = :oldExpenseName';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':newExpenseName', $newExpenseName, PDO::PARAM_STR);
+        $stmt->bindValue(':oldExpenseName', $oldExpenseName, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
+    public function renamePaymentCategory($oldPaymentName, $newPaymentName){
+
+        if ($this->validateNewExpenseCategoryName($newPaymentName)){
+            if($this->updateNewPaymentCategoryInDB($oldPaymentName, $newPaymentName)){
+                return true;
+            }
+        } else {
+            return $this->errorMessage;
+        }
+    }
+
+    private function updateNewPaymentCategoryInDB($oldPaymentName, $newPaymentName){
+
+        $sql = 'UPDATE payment_methods_assigned_to_users SET 
+                name = :newPaymentName
+                WHERE user_id = :user_id AND name = :oldPaymentName';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':newPaymentName', $newPaymentName, PDO::PARAM_STR);
+        $stmt->bindValue(':oldPaymentName', $oldPaymentName, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
+    public function deleteExpenseCategory($expenseName){
+
+        $this->deleteAllExpensesFromGivenCategory($expenseName);
+
+        $sql = 'DELETE FROM expenses_category_assigned_to_users  
+                WHERE user_id = :user_id AND name = :expenseName';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':expenseName', $expenseName, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
+    private function deleteAllExpensesFromGivenCategory($expenseName){
+
+        $expenseID = $this->getByNameExpenseCategoryIdAssignedToUser($expenseName);
+        
+        $sql = 'DELETE FROM expenses  
+        WHERE user_id = :user_id AND exp_cat_assigned_user_id = :expenseID';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':expenseID', $expenseID, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    private function getByNameExpenseCategoryIdAssignedToUser($expenseName){
+
+        $sql = 'SELECT id FROM expenses_category_assigned_to_users WHERE user_id = :id AND name = :expenseCategory';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':expenseCategory', $expenseName, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_COLUMN, 0);
+    }
+
+    public function deletePaymentCategory($paymentName){
+
+        $this->deleteAllPaymentsFromGivenCategory($paymentName);
+
+        $sql = 'DELETE FROM payment_methods_assigned_to_users  
+                WHERE user_id = :user_id AND name = :paymentName';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':paymentName', $paymentName, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
+    private function deleteAllPaymentsFromGivenCategory($paymentName){
+
+        $paymentID = $this->getByNamePaymentCategoryIdAssignedToUser($paymentName);
+        
+        $sql = 'DELETE FROM expenses  
+        WHERE user_id = :user_id AND pay_meth_assigned_user_id = :paymentID';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':paymentID', $paymentID, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    private function getByNamePaymentCategoryIdAssignedToUser($paymentName){
+
+        $sql = 'SELECT id FROM payment_methods_assigned_to_users WHERE user_id = :id AND name = :paymentName';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':paymentName', $paymentName, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_COLUMN, 0);
     }
 }
 

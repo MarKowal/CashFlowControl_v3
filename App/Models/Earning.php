@@ -29,7 +29,7 @@ class Earning extends \Core\Model{
         $stmt = $db->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+       return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     private function saveToAssignedCategories(){
@@ -42,14 +42,14 @@ class Earning extends \Core\Model{
         $stmt->execute();
     }
 
-    private function checkIfUserHasDefaultCategories(){
+    public static function checkIfUserHasDefaultCategories(){
 
         $sql = 'SELECT name FROM incomes_category_assigned_to_users WHERE user_id = :id';
         $db = static::getDB();
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':id', $_SESSION['user_id'], PDO::PARAM_INT);
         $stmt->execute();
-
+        
         if($stmt->fetch(PDO::FETCH_COLUMN, 1)){
             return true;
         }
@@ -67,8 +67,7 @@ class Earning extends \Core\Model{
 
         return $stmt->fetch(PDO::FETCH_COLUMN, 0);
     }
-
-
+   
     public function saveToIncomes(){
 
         if($this->checkIfUserHasDefaultCategories() == false){
@@ -150,11 +149,138 @@ class Earning extends \Core\Model{
         $db = static::getDB();
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
+    }
+
+    public static function getIncomeCategoryNameAssignedToUser(){
+
+        $sql = 'SELECT name FROM incomes_category_assigned_to_users WHERE user_id = :user_id ORDER BY name ASC';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+    }
+
+    public function addNewIncomeCategory($newIncomeName){
+
+        if ($this->validateNewIncomeCategoryName($newIncomeName)){
+            if($this->addNewIncomeCategoryInDB($newIncomeName)){
+                return true;
+            }
+        } else {
+            return $this->errorMessage;
+        }
+    }
+
+    private function validateNewIncomeCategoryName($newIncomeName){
+
+        if (strlen($newIncomeName) < 2){
+            $this->errorMessage = 'Category name must have at least 2 characters.';
+            return false;
+        }        
+
+        if (preg_match('/[A-Z]+/', $newIncomeName) == 1){
+            $this->errorMessage = 'Category cannot include big letters.';
+            return false;
+        }
+
+        if (preg_match('/[\d]/', $newIncomeName) == 1){
+            $this->errorMessage = 'Category cannot include numbers.';
+            return false;
+        }
+
+        if (preg_match('/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:/', $newIncomeName) == 1){
+            $this->errorMessage = 'Category cannot include special characters.';
+            return false;
+        }
+
+        return true;
+    }
+
+    private function addNewIncomeCategoryInDB($newIncomeName){
+
+        $sql = 'INSERT INTO incomes_category_assigned_to_users (user_id, name) 
+        VALUES (:user_id, :name)';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':name', $newIncomeName, PDO::PARAM_STR);
+
+        return $stmt->execute();
     }
 
 
+    public function renameIncomeCategory($oldIncomeName, $newIncomeName){
 
+        if ($this->validateNewIncomeCategoryName($newIncomeName)){
+            if($this->updateNewIncomeCategoryInDB($oldIncomeName, $newIncomeName)){
+                return true;
+            }
+        } else {
+            return $this->errorMessage;
+        }
+    }
+
+    private function updateNewIncomeCategoryInDB($oldIncomeName, $newIncomeName){
+
+        $sql = 'UPDATE incomes_category_assigned_to_users SET 
+                name = :newIncomeName
+                WHERE user_id = :user_id AND name = :oldIncomeName';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':newIncomeName', $newIncomeName, PDO::PARAM_STR);
+        $stmt->bindValue(':oldIncomeName', $oldIncomeName, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
+    public function deleteIncomeCategory($incomeName){
+
+        $this->deleteAllIncomesFromGivenCategory($incomeName);
+
+        $sql = 'DELETE FROM incomes_category_assigned_to_users  
+                WHERE user_id = :user_id AND name = :incomeName';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':incomeName', $incomeName, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
+    private function deleteAllIncomesFromGivenCategory($incomeName){
+
+        $incomeID = $this->getByNameIncomeCategoryIdAssignedToUser($incomeName);
+        
+        $sql = 'DELETE FROM incomes  
+        WHERE user_id = :user_id AND inc_cat_assigned_user_id = :incomeID';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':incomeID', $incomeID, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    private function getByNameIncomeCategoryIdAssignedToUser($incomeName){
+
+        $sql = 'SELECT id FROM incomes_category_assigned_to_users WHERE user_id = :id AND name = :incomeCategory';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':incomeCategory', $incomeName, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_COLUMN, 0);
+    }
 }

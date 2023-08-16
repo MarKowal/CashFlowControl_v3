@@ -13,11 +13,19 @@ class Expense extends Authenticated{
 
     public function newAction(){
 
-        View::renderTemplate('Expense/new.html', [
-            'categories' => Expenditure::getDefaultExpenseCategories(),
-            'presentDate' => TimeAndDate::getPresentDate(),
-            'payments' => Expenditure::getDefaultPaymentCategories()
-        ]);
+        if(Expenditure::checkIfUserHasDefaultExpenseCategories()){
+            View::renderTemplate('Expense/new.html', [
+                'categories' => Expenditure::getExpenseCategoryNameAssignedToUser(),
+                'presentDate' => TimeAndDate::getPresentDate(),
+                'payments' => Expenditure::getPaymentCategoryNameAssignedToUser()
+            ]);
+        } else {
+            View::renderTemplate('Expense/new.html', [
+                'categories' => Expenditure::getDefaultExpenseCategories(),
+                'presentDate' => TimeAndDate::getPresentDate(),
+                'payments' => Expenditure::getDefaultPaymentCategories()
+            ]);
+        }
     }
 
     public function createAction(){
