@@ -358,6 +358,48 @@ class Expenditure extends \Core\Model{
 
         return $stmt->execute();
     }
+
+    public function deleteExpenseCategory($expenseName){
+
+        $this->deleteAllExpensesFromGivenCategory($expenseName);
+
+        $sql = 'DELETE FROM expenses_category_assigned_to_users  
+                WHERE user_id = :user_id AND name = :expenseName';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':expenseName', $expenseName, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
+    private function deleteAllExpensesFromGivenCategory($expenseName){
+
+        $expenseID = $this->getByNameExpenseCategoryIdAssignedToUser($expenseName);
+        
+        $sql = 'DELETE FROM expenses  
+        WHERE user_id = :user_id AND exp_cat_assigned_user_id = :expenseID';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':expenseID', $expenseID, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    private function getByNameExpenseCategoryIdAssignedToUser($expenseName){
+
+        $sql = 'SELECT id FROM expenses_category_assigned_to_users WHERE user_id = :id AND name = :expenseCategory';
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':expenseCategory', $expenseName, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_COLUMN, 0);
+    }
 }
 
 ?>
