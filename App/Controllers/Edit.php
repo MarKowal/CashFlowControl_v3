@@ -165,6 +165,13 @@ class Edit extends Authenticated{
 
     public function deletePaymentAction(){
        
+        if($this->expensesCategories->deletePaymentCategory($_POST['delete']) === true){
+            Flash::addMessages('Payment category has been deleted.', 'success');
+            $this->redirect('/Edit/new');
+        } else {
+            Flash::addMessages('Payment category cannot be deleted', 'warning');
+            $this->redirect('/Edit/new');
+        }
 
     }
 
